@@ -11,6 +11,8 @@ using QPH_MAIN.Core.Entities;
 using QPH_MAIN.Core.Interfaces;
 using QPH_MAIN.Core.QueryFilters;
 using QPH_MAIN.Infrastructure.Interfaces;
+using Sieve.Models;
+using Sieve.Services;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -37,8 +39,9 @@ namespace QPH_MAIN.Api.Controllers
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly IUriService _uriService;
+        private readonly SieveProcessor _sieveProcessor;
 
-        public UserController(IMapper mapper, IRoutingService routingService, IUriService uriService, IConfiguration configuration, ICountryService countryService, IEnterpriseService enterpriseService, IRolesService rolesService, IUserService userService, IPasswordService passwordService)
+        public UserController(IMapper mapper, IRoutingService routingService, IUriService uriService, IConfiguration configuration, ICountryService countryService, IEnterpriseService enterpriseService, IRolesService rolesService, IUserService userService, IPasswordService passwordService, SieveProcessor sieveProcessor)
         {
             _mapper = mapper;
             _routingService = routingService;
@@ -49,9 +52,10 @@ namespace QPH_MAIN.Api.Controllers
             _rolesService = rolesService;
             _configuration = configuration;
             _passwordService = passwordService;
+            _sieveProcessor = sieveProcessor;
         }
 
-        /// <summary>
+        /*/// <summary>
         /// Retrieve all users
         /// </summary>
         /// <param name="filters">Filters to apply</param>
@@ -82,6 +86,41 @@ namespace QPH_MAIN.Api.Controllers
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(response);
         }
+        */
+
+        /// <summary>
+        /// Retrieve all users
+        /// </summary>
+        /// <param name="filters">Filters to apply</param>
+        /// <returns></returns>
+        /// 
+        [Authorize]
+        [HttpGet("RetrieveUsers")]
+        public IActionResult GetAllUsers(SieveModel sieveModel)
+        {
+            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            _userService.SieveProcessor = _sieveProcessor;
+            var users = _userService.GetUsers( sieveModel);
+            var usersDto = _mapper.Map<IEnumerable<UserDto>>(users);
+            var metadata = new Metadata
+            {
+                TotalCount = users.TotalCount,
+                PageSize = users.PageSize,
+                CurrentPage = users.CurrentPage,
+                TotalPages = users.TotalPages,
+                HasNextPage = users.HasNextPage,
+                HasPreviousPage = users.HasPreviousPage,
+                //NextPageUrl = _uriService.GetPostPaginationUri(filters, Url.RouteUrl(nameof(GetUsers))).ToString(),
+                //PreviousPageUrl = _uriService.GetPostPaginationUri(filters, Url.RouteUrl(nameof(GetUsers))).ToString()
+            };
+            var response = new ApiResponse<IEnumerable<UserDto>>(usersDto)
+            {
+                Meta = metadata
+            };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            return Ok(response);
+        }
+
 
         /// <summary>
         /// Obtain UserDetail by AuthenticationToken
@@ -214,7 +253,7 @@ namespace QPH_MAIN.Api.Controllers
                 _configuration["Authentication:Audience"],
                 claims,
                 DateTime.Now,
-                DateTime.UtcNow.AddMinutes(30)
+                DateTime.UtcNow.AddMinutes(120)
             );
             var token = new JwtSecurityToken(header, payload);
             return new JwtSecurityTokenHandler().WriteToken(token);

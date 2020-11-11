@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Sieve.Attributes;
+using System.Collections.Generic;
 
 namespace QPH_MAIN.Core.Entities
 {
@@ -14,10 +15,15 @@ namespace QPH_MAIN.Core.Entities
         public int id_role { get; set; }
         public int id_enterprise { get; set; }
         public int id_country { get; set; }
+        [Sieve(CanFilter = true, CanSort = true)]
         public string nickname { get; set; }
+        [Sieve(CanFilter = true, CanSort = true)]
         public string firstName { get; set; }
+        [Sieve(CanFilter = true, CanSort = true)]
         public string lastName { get; set; }
+        [Sieve(CanFilter = true, CanSort = true)]
         public string email { get; set; }
+        [Sieve(CanFilter = true, CanSort = true)]
         public string phone_number { get; set; }
         public string hashPassword { get; set; }
         public string google_access_token { get; set; }

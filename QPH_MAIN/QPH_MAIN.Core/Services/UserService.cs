@@ -13,6 +13,8 @@ using QPH_MAIN.Core.Interfaces;
 using QPH_MAIN.Core.QueryFilters;
 using QPH_MAIN.Core.DTOs;
 using OrderByExtensions;
+using Sieve.Services;
+using Sieve.Models;
 
 namespace QPH_MAIN.Core.Services
 {
@@ -21,6 +23,8 @@ namespace QPH_MAIN.Core.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly PaginationOptions _paginationOptions;
 
+        public ISieveProcessor SieveProcessor { get; set; }
+
         public UserService(IUnitOfWork unitOfWork, IOptions<PaginationOptions> options)
         {
             _unitOfWork = unitOfWork;
@@ -28,11 +32,12 @@ namespace QPH_MAIN.Core.Services
         }
         public async Task<User> GetUser(int id) => await _unitOfWork.UserRepository.GetById(id);
 
-        public PagedList<User> GetUsers(UserQueryFilter filters)
+        /*public PagedList<User> GetUsers(UserQueryFilter filters, SieveModel sieveModel)
         {
             filters.PageNumber = filters.PageNumber == 0 ? _paginationOptions.DefaultPageNumber : filters.PageNumber;
             filters.PageSize = filters.PageSize == 0 ? _paginationOptions.DefaultPageSize : filters.PageSize;
             var users = _unitOfWork.UserRepository.GetAll();
+            var usersFilter = _unitOfWork.UserRepository.GetAllUser();
             if (filters.filter != null)
             {
                 users = users.Where(x => x.nickname.ToLower().Contains(filters.filter.ToLower()));
@@ -98,7 +103,7 @@ namespace QPH_MAIN.Core.Services
             }
             var pagedPosts = PagedList<User>.Create(users, filters.PageNumber, filters.PageSize);
             return pagedPosts;
-        }
+        }*/
 
         public async Task<User> InsertUser(User user)
         {
@@ -140,14 +145,15 @@ namespace QPH_MAIN.Core.Services
             existingUser.email = user.email;
             existingUser.phone_number = user.phone_number;
             existingUser.hashPassword = user.hashPassword;
-            existingUser.google_access_token = user.google_access_token;
-            existingUser.facebook_access_token = user.facebook_access_token;
-            existingUser.firebase_token = user.firebase_token;
+            existingUser.google_access_token = user.google_access_token ?? "";
+            existingUser.facebook_access_token = user.facebook_access_token ?? "";
+            existingUser.firebase_token = user.firebase_token ?? "";
             existingUser.is_account_activated = user.is_account_activated;
             existingUser.profile_picture = user.profile_picture;
             existingUser.status = user.status;
             _unitOfWork.UserRepository.Update(existingUser);
             await _unitOfWork.SaveChangesAsync();
+           
             return true;
         }
 
@@ -238,5 +244,20 @@ namespace QPH_MAIN.Core.Services
         public async Task<bool> CheckDuplicatedPhone(string phone) => await _unitOfWork.UserRepository.CheckDuplicatedPhone(phone);
 
         public async Task<bool> CheckDuplicatedNickname(string nickname) => await _unitOfWork.UserRepository.CheckDuplicatedNickname(nickname);
+
+        public PagedList<User> GetUsers(SieveModel sieveModel)
+        {
+            var usersFilter = _unitOfWork.UserRepository.GetAllUser();
+            var page = sieveModel?.Page ?? 1;
+            var pageSize = sieveModel?.PageSize ?? 10;
+
+            if (sieveModel != null)
+            {
+                // apply pagination in a later step
+                usersFilter = SieveProcessor.Apply(sieveModel, usersFilter, applyPagination: false);
+            }
+            var pagedPosts = PagedList<User>.CreateFromQuerable(usersFilter, page, pageSize);
+            return pagedPosts;
+        }
     }
 }

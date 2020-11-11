@@ -1,5 +1,6 @@
 ﻿using QPH_MAIN.Core.Entities;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace QPH_MAIN.Core.Interfaces
@@ -15,5 +16,6 @@ namespace QPH_MAIN.Core.Interfaces
         Task<bool> CheckDuplicatedNickname(string nickname);
         Task<User> GetDetailUser(int userId);
         Task<User> GetByUsername(string username);
+        IQueryable<User> GetAllUser();
     }
 }

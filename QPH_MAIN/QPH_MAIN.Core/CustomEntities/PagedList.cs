@@ -1,6 +1,8 @@
-﻿using System;
+﻿using QPH_MAIN.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace QPH_MAIN.Core.CustomEntities
 {
@@ -29,6 +31,13 @@ namespace QPH_MAIN.Core.CustomEntities
             var count = source.Count();
             var items = source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
             return new PagedList<T>(items, count, pageNumber, pageSize);
+        }
+
+        public static PagedList<T> CreateFromQuerable(IQueryable<T> usersFilter, int page, int pageSize)
+        {
+            var rowCount = usersFilter.Count();
+            var items = usersFilter.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            return new PagedList<T>(items, rowCount, page, pageSize);
         }
     }
 }

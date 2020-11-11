@@ -11,6 +11,7 @@ using QPH_MAIN.Infrastructure.Interfaces;
 using QPH_MAIN.Infrastructure.Options;
 using QPH_MAIN.Infrastructure.Repositories;
 using QPH_MAIN.Infrastructure.Services;
+using Sieve.Services;
 using System;
 using System.IO;
 
@@ -43,6 +44,7 @@ namespace QPH_MAIN.Infrastructure.Extensions
         {
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddScoped(typeof(ICodeRepository<>), typeof(BaseCodeRepository<>));
+            services.AddScoped<SieveProcessor>();
             services.AddTransient<ISystemParametersService, SystemParametersService>();
             services.AddTransient<ICityService, CityService>();
             services.AddTransient<ICardsService, CardsService>();

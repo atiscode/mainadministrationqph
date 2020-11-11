@@ -2,13 +2,16 @@
 using QPH_MAIN.Core.DTOs;
 using QPH_MAIN.Core.Entities;
 using QPH_MAIN.Core.QueryFilters;
+using Sieve.Models;
+using Sieve.Services;
 using System.Threading.Tasks;
 
 namespace QPH_MAIN.Core.Interfaces
 {
     public interface IUserService
     {
-        PagedList<User> GetUsers(UserQueryFilter filters);
+        ISieveProcessor SieveProcessor { get; set; }
+        PagedList<User> GetUsers(SieveModel sieveModel);
         Task<User> GetUser(int id);
         Task<User> InsertUser(User user);
         Task<User> GetLoginByCredentials(UserLogin userLogin);
