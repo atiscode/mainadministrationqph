@@ -4,6 +4,8 @@ using QPH_MAIN.Core.CustomEntities;
 using QPH_MAIN.Core.Entities;
 using QPH_MAIN.Core.Interfaces;
 using QPH_MAIN.Core.QueryFilters;
+using Sieve.Models;
+using Sieve.Services;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,6 +15,7 @@ namespace QPH_MAIN.Core.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly PaginationOptions _paginationOptions;
+        public ISieveProcessor SieveProcessor { get; set; }
 
         public RolesService(IUnitOfWork unitOfWork, IOptions<PaginationOptions> options)
         {
@@ -24,27 +27,42 @@ namespace QPH_MAIN.Core.Services
 
         public async Task<Roles> GetRoleByName(string name) => await _unitOfWork.RolesRepository.GetByName(name);
 
-        public PagedList<Roles> GetRoles(RolesQueryFilter filters)
+        //public PagedList<Roles> GetRoles(RolesQueryFilter filters)
+        //{
+        //    filters.PageNumber = filters.PageNumber == 0 ? _paginationOptions.DefaultPageNumber : filters.PageNumber;
+        //    filters.PageSize = filters.PageSize == 0 ? _paginationOptions.DefaultPageSize : filters.PageSize;
+        //    var roles = _unitOfWork.RolesRepository.GetAll();
+        //    if (filters.filter != null)
+        //    {
+        //        roles = roles.Where(x => x.rolename.ToLower().Contains(filters.filter.ToLower()));
+        //    }
+        //    if (filters.rolename != null)
+        //    {
+        //        roles = roles.Where(x => x.rolename == filters.rolename);
+        //    }
+        //    if (filters.orderedBy != null && filters.orderedBy.Count() > 0)
+        //    {
+        //        foreach (var sortM in filters.orderedBy)
+        //        {
+        //            roles = roles.OrderBy(sortM.PairAsSqlExpression);
+        //        }
+        //    }
+        //    var pagedPosts = PagedList<Roles>.Create(roles, filters.PageNumber, filters.PageSize);
+        //    return pagedPosts;
+        //}
+
+        public PagedList<Roles> GetRoles(SieveModel sieveModel)
         {
-            filters.PageNumber = filters.PageNumber == 0 ? _paginationOptions.DefaultPageNumber : filters.PageNumber;
-            filters.PageSize = filters.PageSize == 0 ? _paginationOptions.DefaultPageSize : filters.PageSize;
-            var roles = _unitOfWork.RolesRepository.GetAll();
-            if (filters.filter != null)
+            var usersFilter = _unitOfWork.RolesRepository.GetAllRoles();
+            var page = sieveModel?.Page ?? 1;
+            var pageSize = sieveModel?.PageSize ?? 10;
+
+            if (sieveModel != null)
             {
-                roles = roles.Where(x => x.rolename.ToLower().Contains(filters.filter.ToLower()));
+                // apply pagination in a later step
+                usersFilter = SieveProcessor.Apply(sieveModel, usersFilter, applyPagination: false);
             }
-            if (filters.rolename != null)
-            {
-                roles = roles.Where(x => x.rolename == filters.rolename);
-            }
-            if (filters.orderedBy != null && filters.orderedBy.Count() > 0)
-            {
-                foreach (var sortM in filters.orderedBy)
-                {
-                    roles = roles.OrderBy(sortM.PairAsSqlExpression);
-                }
-            }
-            var pagedPosts = PagedList<Roles>.Create(roles, filters.PageNumber, filters.PageSize);
+            var pagedPosts = PagedList<Roles>.CreateFromQuerable(usersFilter, page, pageSize);
             return pagedPosts;
         }
 

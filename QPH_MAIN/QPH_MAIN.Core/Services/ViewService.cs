@@ -4,6 +4,8 @@ using QPH_MAIN.Core.CustomEntities;
 using QPH_MAIN.Core.Entities;
 using QPH_MAIN.Core.Interfaces;
 using QPH_MAIN.Core.QueryFilters;
+using Sieve.Models;
+using Sieve.Services;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,6 +15,7 @@ namespace QPH_MAIN.Core.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly PaginationOptions _paginationOptions;
+        public ISieveProcessor SieveProcessor { get; set; }
 
         public ViewService(IUnitOfWork unitOfWork, IOptions<PaginationOptions> options)
         {
@@ -22,37 +25,18 @@ namespace QPH_MAIN.Core.Services
 
         public async Task<Views> GetView(int id) => await _unitOfWork.ViewRepository.GetById(id);
 
-        public PagedList<Views> GetViews(ViewQueryFilter filters)
+        public PagedList<Views> GetViews(SieveModel sieveModel)
         {
-            filters.PageNumber = filters.PageNumber == 0 ? _paginationOptions.DefaultPageNumber : filters.PageNumber;
-            filters.PageSize = filters.PageSize == 0 ? _paginationOptions.DefaultPageSize : filters.PageSize;
-            var views = _unitOfWork.ViewRepository.GetAll();
-            if (filters.filter != null)
+            var entityFilter = _unitOfWork.ViewRepository.GetAllViews();
+            var page = sieveModel?.Page ?? 1;
+            var pageSize = sieveModel?.PageSize ?? 10;
+
+            if (sieveModel != null)
             {
-                views = views.Where(x => x.code.ToLower().Contains(filters.filter.ToLower()));
-                views = views.Where(x => x.name.ToLower().Contains(filters.filter.ToLower()));
-                views = views.Where(x => x.route.ToLower().Contains(filters.filter.ToLower()));
+                // apply pagination in a later step
+                entityFilter = SieveProcessor.Apply(sieveModel, entityFilter, applyPagination: false);
             }
-            if (filters.Code != null)
-            {
-                views = views.Where(x => x.code == filters.Code);
-            }
-            if (filters.Route != null)
-            {
-                views = views.Where(x => x.route == filters.Route);
-            }
-            if (filters.Name != null)
-            {
-                views = views.Where(x => x.name.ToLower().Contains(filters.Name.ToLower()));
-            }
-            if (filters.orderedBy != null && filters.orderedBy.Count() > 0)
-            {
-                foreach (var sortM in filters.orderedBy)
-                {
-                    views = views.OrderBy(sortM.PairAsSqlExpression);
-                }
-            }
-            var pagedPosts = PagedList<Views>.Create(views, filters.PageNumber, filters.PageSize);
+            var pagedPosts = PagedList<Views>.CreateFromQuerable(entityFilter, page, pageSize);
             return pagedPosts;
         }
 

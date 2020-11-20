@@ -12,5 +12,7 @@ namespace QPH_MAIN.Infrastructure.Repositories
     public class SystemParametersRepository : BaseCodeRepository<SystemParameters>, ISystemParametersRepository
     {
         public SystemParametersRepository(QPHContext context) : base(context) { }
+
+        public IQueryable<SystemParameters> GetAllSystemParameters() => _entities.AsNoTracking();
     }
 }

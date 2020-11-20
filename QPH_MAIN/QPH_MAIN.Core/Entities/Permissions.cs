@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Sieve.Attributes;
+using System.Collections.Generic;
 
 namespace QPH_MAIN.Core.Entities
 {
@@ -8,7 +9,7 @@ namespace QPH_MAIN.Core.Entities
         {
             userCardPermissions = new HashSet<UserCardPermission>();
         }
-
+        [Sieve(CanFilter = true, CanSort = true)]
         public string permission { get; set; }
         public virtual ICollection<UserCardPermission> userCardPermissions { get; set; }
     }

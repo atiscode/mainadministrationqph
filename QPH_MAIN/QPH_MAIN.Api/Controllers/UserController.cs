@@ -55,43 +55,10 @@ namespace QPH_MAIN.Api.Controllers
             _sieveProcessor = sieveProcessor;
         }
 
-        /*/// <summary>
-        /// Retrieve all users
-        /// </summary>
-        /// <param name="filters">Filters to apply</param>
-        /// <returns></returns>
-        /// 
-        [Authorize]
-        [HttpPost("RetrieveUsers")]
-        public IActionResult GetUsers([FromBody] UserQueryFilter filters)
-        {
-            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var users = _userService.GetUsers(filters);
-            var usersDto = _mapper.Map<IEnumerable<UserDto>>(users);
-            var metadata = new Metadata
-            {
-                TotalCount = users.TotalCount,
-                PageSize = users.PageSize,
-                CurrentPage = users.CurrentPage,
-                TotalPages = users.TotalPages,
-                HasNextPage = users.HasNextPage,
-                HasPreviousPage = users.HasPreviousPage,
-                NextPageUrl = _uriService.GetPostPaginationUri(filters, Url.RouteUrl(nameof(GetUsers))).ToString(),
-                PreviousPageUrl = _uriService.GetPostPaginationUri(filters, Url.RouteUrl(nameof(GetUsers))).ToString()
-            };
-            var response = new ApiResponse<IEnumerable<UserDto>>(usersDto)
-            {
-                Meta = metadata
-            };
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
-            return Ok(response);
-        }
-        */
-
         /// <summary>
         /// Retrieve all users
         /// </summary>
-        /// <param name="filters">Filters to apply</param>
+        /// <param name="sieveModel"></param>
         /// <returns></returns>
         /// 
         [Authorize]
@@ -100,27 +67,24 @@ namespace QPH_MAIN.Api.Controllers
         {
             if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
             _userService.SieveProcessor = _sieveProcessor;
-            var users = _userService.GetUsers( sieveModel);
-            var usersDto = _mapper.Map<IEnumerable<UserDto>>(users);
+            var entity = _userService.GetUsers(sieveModel);
+            var entityDTO = _mapper.Map<IEnumerable<UserDto>>(entity);
             var metadata = new Metadata
             {
-                TotalCount = users.TotalCount,
-                PageSize = users.PageSize,
-                CurrentPage = users.CurrentPage,
-                TotalPages = users.TotalPages,
-                HasNextPage = users.HasNextPage,
-                HasPreviousPage = users.HasPreviousPage,
-                //NextPageUrl = _uriService.GetPostPaginationUri(filters, Url.RouteUrl(nameof(GetUsers))).ToString(),
-                //PreviousPageUrl = _uriService.GetPostPaginationUri(filters, Url.RouteUrl(nameof(GetUsers))).ToString()
+                TotalCount = entity.TotalCount,
+                PageSize = entity.PageSize,
+                CurrentPage = entity.CurrentPage,
+                TotalPages = entity.TotalPages,
+                HasNextPage = entity.HasNextPage,
+                HasPreviousPage = entity.HasPreviousPage,
             };
-            var response = new ApiResponse<IEnumerable<UserDto>>(usersDto)
+            var response = new ApiResponse<IEnumerable<UserDto>>(entityDTO)
             {
                 Meta = metadata
             };
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(response);
         }
-
 
         /// <summary>
         /// Obtain UserDetail by AuthenticationToken

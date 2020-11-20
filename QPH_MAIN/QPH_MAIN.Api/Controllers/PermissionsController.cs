@@ -9,6 +9,8 @@ using QPH_MAIN.Core.Entities;
 using QPH_MAIN.Core.Interfaces;
 using QPH_MAIN.Core.QueryFilters;
 using QPH_MAIN.Infrastructure.Interfaces;
+using Sieve.Models;
+using Sieve.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,38 +28,41 @@ namespace QPH_MAIN.Api.Controllers
         private readonly IPermissionsService _permissionsService;
         private readonly IMapper _mapper;
         private readonly IUriService _uriService;
+        private readonly SieveProcessor _sieveProcessor;
 
-        public PermissionsController(IPermissionsService permissionsService, IMapper mapper, IUriService uriService)
+        public PermissionsController(IPermissionsService permissionsService, IMapper mapper, IUriService uriService, SieveProcessor sieveProcessor)
         {
             _permissionsService = permissionsService;
             _mapper = mapper;
             _uriService = uriService;
+            _sieveProcessor = sieveProcessor;
         }
 
 
         /// <summary>
-        /// Retrieve all permissions
+        /// Retrieve all Permissions
         /// </summary>
-        /// <param name="filters">Filters to apply</param>
+        /// <param name="sieveModel"></param>
         /// <returns></returns>
+        /// 
         [Authorize]
-        [HttpPost("RetrievePermissions")]
-        public IActionResult GetPermissions([FromBody] PermissionsQueryFilter filters)
+        [HttpGet("RetrievePermissions")]
+        public IActionResult GetAllPermissions(SieveModel sieveModel)
         {
-            var Permissions = _permissionsService.GetPermissions(filters);
-            var permissionsDto = _mapper.Map<IEnumerable<PermissionsDto>>(Permissions);
+            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            _permissionsService.SieveProcessor = _sieveProcessor;
+            var entity = _permissionsService.GetPermissions(sieveModel);
+            var entityDTO = _mapper.Map<IEnumerable<PermissionsDto>>(entity);
             var metadata = new Metadata
             {
-                TotalCount = Permissions.TotalCount,
-                PageSize = Permissions.PageSize,
-                CurrentPage = Permissions.CurrentPage,
-                TotalPages = Permissions.TotalPages,
-                HasNextPage = Permissions.HasNextPage,
-                HasPreviousPage = Permissions.HasPreviousPage,
-                NextPageUrl = _uriService.GetPostPaginationUri(filters, Url.RouteUrl(nameof(GetPermissions))).ToString(),
-                PreviousPageUrl = _uriService.GetPostPaginationUri(filters, Url.RouteUrl(nameof(GetPermissions))).ToString()
+                TotalCount = entity.TotalCount,
+                PageSize = entity.PageSize,
+                CurrentPage = entity.CurrentPage,
+                TotalPages = entity.TotalPages,
+                HasNextPage = entity.HasNextPage,
+                HasPreviousPage = entity.HasPreviousPage,
             };
-            var response = new ApiResponse<IEnumerable<PermissionsDto>>(permissionsDto)
+            var response = new ApiResponse<IEnumerable<PermissionsDto>>(entityDTO)
             {
                 Meta = metadata
             };

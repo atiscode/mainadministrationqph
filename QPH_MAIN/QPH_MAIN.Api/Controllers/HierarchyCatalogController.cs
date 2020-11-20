@@ -9,6 +9,8 @@ using QPH_MAIN.Core.Entities;
 using QPH_MAIN.Core.Interfaces;
 using QPH_MAIN.Core.QueryFilters;
 using QPH_MAIN.Infrastructure.Interfaces;
+using Sieve.Models;
+using Sieve.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -28,42 +30,42 @@ namespace QPH_MAIN.Api.Controllers
         private readonly ICatalogTreeService _treeService;
         private readonly IMapper _mapper;
         private readonly IUriService _uriService;
+        private readonly SieveProcessor _sieveProcessor;
 
-        public HierarchyCatalogController(ICatalogTreeService treeService, ICatalogService catalogService, IEnterpriseHierarchyCatalogService hierarchyCatalogService, IMapper mapper, IUriService uriService)
+        public HierarchyCatalogController(ICatalogTreeService treeService, ICatalogService catalogService, IEnterpriseHierarchyCatalogService hierarchyCatalogService, IMapper mapper, IUriService uriService, SieveProcessor sieveProcessor)
         {
             _treeService = treeService;
             _catalogService = catalogService;
             _enterpriseHierarchyCatalogService = hierarchyCatalogService;
             _mapper = mapper;
             _uriService = uriService;
+            _sieveProcessor = sieveProcessor;
         }
 
         /// <summary>
         /// Retrieve all catalogs
         /// </summary>
-        /// <param name="filters">Filters to apply</param>
+        /// <param name="sieveModel"></param>
         /// <returns></returns>
+        /// 
         [Authorize]
-        [HttpPost("RetrieveCatalogs")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<CatalogDto>>))]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public IActionResult GetCatalogs([FromBody] CatalogQueryFilter filters)
+        [HttpGet("RetrieveCatalogs")]
+        public IActionResult GetAllCatalogs(SieveModel sieveModel)
         {
             if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var catalogs = _catalogService.GetCatalogs(filters);
-            var catalogsDto = _mapper.Map<IEnumerable<CatalogDto>>(catalogs);
+            _catalogService.SieveProcessor = _sieveProcessor;
+            var entity = _catalogService.GetCatalogs(sieveModel);
+            var entityDTO = _mapper.Map<IEnumerable<CatalogDto>>(entity);
             var metadata = new Metadata
             {
-                TotalCount = catalogs.TotalCount,
-                PageSize = catalogs.PageSize,
-                CurrentPage = catalogs.CurrentPage,
-                TotalPages = catalogs.TotalPages,
-                HasNextPage = catalogs.HasNextPage,
-                HasPreviousPage = catalogs.HasPreviousPage,
-                NextPageUrl = _uriService.GetPostPaginationUri(filters, Url.RouteUrl(nameof(GetCatalogs))).ToString(),
-                PreviousPageUrl = _uriService.GetPostPaginationUri(filters, Url.RouteUrl(nameof(GetCatalogs))).ToString()
+                TotalCount = entity.TotalCount,
+                PageSize = entity.PageSize,
+                CurrentPage = entity.CurrentPage,
+                TotalPages = entity.TotalPages,
+                HasNextPage = entity.HasNextPage,
+                HasPreviousPage = entity.HasPreviousPage,
             };
-            var response = new ApiResponse<IEnumerable<CatalogDto>>(catalogsDto)
+            var response = new ApiResponse<IEnumerable<CatalogDto>>(entityDTO)
             {
                 Meta = metadata
             };
@@ -122,11 +124,11 @@ namespace QPH_MAIN.Api.Controllers
         /// </summary>
         [Authorize]
         [HttpPut]
-        public async Task<IActionResult> Put(int id, CatalogDto CatalogDto)
+        public async Task<IActionResult> Put([FromBody]  CatalogDto CatalogDto)
         {
             if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
             var catalog = _mapper.Map<Catalog>(CatalogDto);
-            catalog.Id = id;
+            catalog.Id = CatalogDto.Id;// id;
             var result = await _catalogService.UpdateCatalog(catalog);
             var response = new ApiResponse<bool>(result);
             return Ok(response);

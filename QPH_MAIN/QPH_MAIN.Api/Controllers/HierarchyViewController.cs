@@ -9,6 +9,8 @@ using QPH_MAIN.Core.Entities;
 using QPH_MAIN.Core.Interfaces;
 using QPH_MAIN.Core.QueryFilters;
 using QPH_MAIN.Infrastructure.Interfaces;
+using Sieve.Models;
+using Sieve.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -30,8 +32,9 @@ namespace QPH_MAIN.Api.Controllers
         private readonly ITreeService _treeService;
         private readonly IMapper _mapper;
         private readonly IUriService _uriService;
+        private readonly SieveProcessor _sieveProcessor;
 
-        public HierarchyViewController(ITreeService treeService, IViewService viewService, IUserViewService hierarchyViewService, IUserCardGrantedService userCardGrantedService, IUserCardPermissionService userCardPermissionService, IMapper mapper, IUriService uriService)
+        public HierarchyViewController(ITreeService treeService, IViewService viewService, IUserViewService hierarchyViewService, IUserCardGrantedService userCardGrantedService, IUserCardPermissionService userCardPermissionService, IMapper mapper, IUriService uriService, SieveProcessor sieveProcessor)
         {
             _treeService = treeService;
             _viewService = viewService;
@@ -40,34 +43,33 @@ namespace QPH_MAIN.Api.Controllers
             _hierarchyViewService = hierarchyViewService;
             _mapper = mapper;
             _uriService = uriService;
+            _sieveProcessor = sieveProcessor;
         }
 
         /// <summary>
-        /// Retrieve all views
+        /// Retrieve all Views
         /// </summary>
-        /// <param name="filters">Filters to apply</param>
+        /// <param name="sieveModel"></param>
         /// <returns></returns>
+        /// 
         [Authorize]
-        [HttpPost("RetrieveViews")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<ViewsDto>>))]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public IActionResult GetViews([FromBody] ViewQueryFilter filters)
+        [HttpGet("RetrieveViews")]
+        public IActionResult GetAllViews(SieveModel sieveModel)
         {
             if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var views = _viewService.GetViews(filters);
-            var viewsDto = _mapper.Map<IEnumerable<ViewsDto>>(views);
+            _viewService.SieveProcessor = _sieveProcessor;
+            var entity = _viewService.GetViews(sieveModel);
+            var entityDTO = _mapper.Map<IEnumerable<ViewsDto>>(entity);
             var metadata = new Metadata
             {
-                TotalCount = views.TotalCount,
-                PageSize = views.PageSize,
-                CurrentPage = views.CurrentPage,
-                TotalPages = views.TotalPages,
-                HasNextPage = views.HasNextPage,
-                HasPreviousPage = views.HasPreviousPage,
-                NextPageUrl = _uriService.GetPostPaginationUri(filters, Url.RouteUrl(nameof(GetViews))).ToString(),
-                PreviousPageUrl = _uriService.GetPostPaginationUri(filters, Url.RouteUrl(nameof(GetViews))).ToString()
+                TotalCount = entity.TotalCount,
+                PageSize = entity.PageSize,
+                CurrentPage = entity.CurrentPage,
+                TotalPages = entity.TotalPages,
+                HasNextPage = entity.HasNextPage,
+                HasPreviousPage = entity.HasPreviousPage,
             };
-            var response = new ApiResponse<IEnumerable<ViewsDto>>(viewsDto)
+            var response = new ApiResponse<IEnumerable<ViewsDto>>(entityDTO)
             {
                 Meta = metadata
             };
@@ -130,11 +132,11 @@ namespace QPH_MAIN.Api.Controllers
         /// </summary>
         [Authorize]
         [HttpPut]
-        public async Task<IActionResult> Put(int id, ViewsDto ViewsDto)
+        public async Task<IActionResult> Put([FromBody] ViewsDto ViewsDto)
         {
             if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
             var view = _mapper.Map<Views>(ViewsDto);
-            view.Id = id;
+            view.Id = ViewsDto.Id;//id;
             var result = await _viewService.UpdateView(view);
             var response = new ApiResponse<bool>(result);
             return Ok(response);

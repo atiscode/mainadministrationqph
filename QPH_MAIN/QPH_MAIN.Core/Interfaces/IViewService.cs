@@ -2,12 +2,15 @@
 using QPH_MAIN.Core.QueryFilters;
 using QPH_MAIN.Core.CustomEntities;
 using System.Threading.Tasks;
+using Sieve.Models;
+using Sieve.Services;
 
 namespace QPH_MAIN.Core.Interfaces
 {
     public interface IViewService
     {
-        PagedList<Views> GetViews(ViewQueryFilter filters);
+        ISieveProcessor SieveProcessor { get; set; }
+        PagedList<Views> GetViews(SieveModel sieveModel);
         Task<Views> GetView(int id);
         Task InsertView(Views views);
         Task<bool> RebuildHierarchy(Tree tree, int idUser);

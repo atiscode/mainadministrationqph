@@ -4,6 +4,8 @@ using QPH_MAIN.Core.CustomEntities;
 using QPH_MAIN.Core.Entities;
 using QPH_MAIN.Core.Interfaces;
 using QPH_MAIN.Core.QueryFilters;
+using Sieve.Models;
+using Sieve.Services;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,6 +15,7 @@ namespace QPH_MAIN.Core.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly PaginationOptions _paginationOptions;
+        public ISieveProcessor SieveProcessor { get; set; }
 
         public CatalogService(IUnitOfWork unitOfWork, IOptions<PaginationOptions> options)
         {
@@ -22,32 +25,18 @@ namespace QPH_MAIN.Core.Services
 
         public async Task<Catalog> GetCatalog(int id) => await _unitOfWork.CatalogRepository.GetById(id);
 
-        public PagedList<Catalog> GetCatalogs(CatalogQueryFilter filters)
+        public PagedList<Catalog> GetCatalogs(SieveModel sieveModel)
         {
-            filters.PageNumber = filters.PageNumber == 0 ? _paginationOptions.DefaultPageNumber : filters.PageNumber;
-            filters.PageSize = filters.PageSize == 0 ? _paginationOptions.DefaultPageSize : filters.PageSize;
-            var views = _unitOfWork.CatalogRepository.GetAll();
-            if (filters.filter != null)
+            var entityFilter = _unitOfWork.CatalogRepository.GetAllCatalogs();
+            var page = sieveModel?.Page ?? 1;
+            var pageSize = sieveModel?.PageSize ?? 10;
+
+            if (sieveModel != null)
             {
-                views = views.Where(x => x.code.ToLower().Contains(filters.filter.ToLower()));
-                views = views.Where(x => x.name.ToLower().Contains(filters.filter.ToLower()));
+                // apply pagination in a later step
+                entityFilter = SieveProcessor.Apply(sieveModel, entityFilter, applyPagination: false);
             }
-            if (filters.Code != null)
-            {
-                views = views.Where(x => x.code == filters.Code);
-            }
-            if (filters.Name != null)
-            {
-                views = views.Where(x => x.name.ToLower().Contains(filters.Name.ToLower()));
-            }
-            if (filters.orderedBy != null && filters.orderedBy.Count() > 0)
-            {
-                foreach (var sortM in filters.orderedBy)
-                {
-                    views = views.OrderBy(sortM.PairAsSqlExpression);
-                }
-            }
-            var pagedPosts = PagedList<Catalog>.Create(views, filters.PageNumber, filters.PageSize);
+            var pagedPosts = PagedList<Catalog>.CreateFromQuerable(entityFilter, page, pageSize);
             return pagedPosts;
         }
 
@@ -69,7 +58,7 @@ namespace QPH_MAIN.Core.Services
             var existingCatalog = await _unitOfWork.CatalogRepository.GetById(views.Id);
             existingCatalog.name = views.name;
             existingCatalog.code = views.code;
-            _unitOfWork.CatalogRepository.Update(existingCatalog);
+            _unitOfWork.CatalogRepository.Update(existingCatalog, views);
             await _unitOfWork.SaveChangesAsync();
             return true;
         }

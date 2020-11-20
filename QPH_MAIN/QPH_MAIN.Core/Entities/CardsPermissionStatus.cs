@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Sieve.Attributes;
+using System.Collections.Generic;
 
 namespace QPH_MAIN.Core.Entities
 {
@@ -10,6 +11,7 @@ namespace QPH_MAIN.Core.Entities
             viewCard = new HashSet<ViewCard>();
         }
 
+        [Sieve(CanFilter = true, CanSort = true)]
         public string card { get; set; }
         public virtual ICollection<UserCardGranted> userCardGranted { get; set; }
         public virtual ICollection<ViewCard> viewCard { get; set; }

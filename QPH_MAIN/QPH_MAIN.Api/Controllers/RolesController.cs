@@ -9,6 +9,8 @@ using QPH_MAIN.Core.Entities;
 using QPH_MAIN.Core.Interfaces;
 using QPH_MAIN.Core.QueryFilters;
 using QPH_MAIN.Infrastructure.Interfaces;
+using Sieve.Models;
+using Sieve.Services;
 using System.Collections.Generic;
 using System.Net;
 using System.Security.Authentication;
@@ -23,38 +25,40 @@ namespace QPH_MAIN.Api.Controllers
         private readonly IRolesService _roleService;
         private readonly IMapper _mapper;
         private readonly IUriService _uriService;
+        private readonly SieveProcessor _sieveProcessor;
 
-        public RolesController(IRolesService roleService, IMapper mapper, IUriService uriService)
+        public RolesController(IRolesService roleService, IMapper mapper, IUriService uriService, SieveProcessor sieveProcessor)
         {
             _roleService = roleService;
             _mapper = mapper;
             _uriService = uriService;
+            _sieveProcessor = sieveProcessor;
         }
 
         /// <summary>
         /// Retrieve all roles
         /// </summary>
-        /// <param name="filters">Filters to apply</param>
+        /// <param name="sieveModel"></param>
         /// <returns></returns>
+        /// 
         [Authorize]
-        [HttpPost("RetrieveRoles")]
-        public IActionResult GetRoles([FromBody] RolesQueryFilter filters)
+        [HttpGet("RetrieveRoles")]
+        public IActionResult GetAllRoles(SieveModel sieveModel)
         {
             if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var roles = _roleService.GetRoles(filters);
-            var rolesDto = _mapper.Map<IEnumerable<RolesDto>>(roles);
+            _roleService.SieveProcessor = _sieveProcessor;
+            var entity = _roleService.GetRoles(sieveModel);
+            var entityDTO = _mapper.Map<IEnumerable<RolesDto>>(entity);
             var metadata = new Metadata
             {
-                TotalCount = roles.TotalCount,
-                PageSize = roles.PageSize,
-                CurrentPage = roles.CurrentPage,
-                TotalPages = roles.TotalPages,
-                HasNextPage = roles.HasNextPage,
-                HasPreviousPage = roles.HasPreviousPage,
-                NextPageUrl = _uriService.GetPostPaginationUri(filters, Url.RouteUrl(nameof(GetRoles))).ToString(),
-                PreviousPageUrl = _uriService.GetPostPaginationUri(filters, Url.RouteUrl(nameof(GetRoles))).ToString()
+                TotalCount = entity.TotalCount,
+                PageSize = entity.PageSize,
+                CurrentPage = entity.CurrentPage,
+                TotalPages = entity.TotalPages,
+                HasNextPage = entity.HasNextPage,
+                HasPreviousPage = entity.HasPreviousPage,
             };
-            var response = new ApiResponse<IEnumerable<RolesDto>>(rolesDto)
+            var response = new ApiResponse<IEnumerable<RolesDto>>(entityDTO)
             {
                 Meta = metadata
             };
@@ -96,11 +100,11 @@ namespace QPH_MAIN.Api.Controllers
         /// </summary>
         [Authorize]
         [HttpPut]
-        public async Task<IActionResult> Put(int id, RolesDto roleDto)
+        public async Task<IActionResult> Put([FromBody] RolesDto roleDto)
         {
             if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
             var role = _mapper.Map<Roles>(roleDto);
-            role.Id = id;
+            role.Id = roleDto.Id;//id;
             var result = await _roleService.UpdateRole(role);
             var response = new ApiResponse<bool>(result);
             return Ok(response);

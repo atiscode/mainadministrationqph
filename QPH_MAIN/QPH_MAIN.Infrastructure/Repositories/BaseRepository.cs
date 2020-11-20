@@ -21,6 +21,7 @@ namespace QPH_MAIN.Infrastructure.Repositories
         public async Task<T> GetById(int id) => await _entities.FindAsync(id);
         public async Task Add(T entity) => await _entities.AddAsync(entity);
         public void Update(T entity) => _entities.Update(entity);
+        public void Update(T oldEntity, T entity) => _context.Entry(oldEntity).CurrentValues.SetValues(entity);
         public async Task Delete(int id)
         {
             T entity = await GetById(id);

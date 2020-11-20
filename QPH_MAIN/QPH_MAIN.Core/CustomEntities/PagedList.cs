@@ -33,10 +33,10 @@ namespace QPH_MAIN.Core.CustomEntities
             return new PagedList<T>(items, count, pageNumber, pageSize);
         }
 
-        public static PagedList<T> CreateFromQuerable(IQueryable<T> usersFilter, int page, int pageSize)
+        public static PagedList<T> CreateFromQuerable(IQueryable<T> source, int page, int pageSize)
         {
-            var rowCount = usersFilter.Count();
-            var items = usersFilter.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            var rowCount = source.Count();
+            var items = source.Skip((page - 1) * pageSize).Take(pageSize).ToList();
             return new PagedList<T>(items, rowCount, page, pageSize);
         }
     }

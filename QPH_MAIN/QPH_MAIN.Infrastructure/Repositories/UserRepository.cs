@@ -11,11 +11,7 @@ namespace QPH_MAIN.Infrastructure.Repositories
 {
     public class UserRepository : BaseRepository<User>, IUserRepository
     {
-        private QPHContext _context;
-        public UserRepository(QPHContext context) : base(context)
-        {
-            _context = context;
-        }
+        public UserRepository(QPHContext context) : base(context) { }
 
         public async Task<bool> CheckDuplicatedEmail(string email)
         {
@@ -41,7 +37,7 @@ namespace QPH_MAIN.Infrastructure.Repositories
         public async Task<IEnumerable<User>> GetUsersByIdCountry(int countryId) => await _entities.Where(x => x.id_country == countryId).ToListAsync();
         public async Task<IEnumerable<User>> GetUsersByIdEnterprise(int enterpriseId) => await _entities.Where(x => x.id_enterprise == enterpriseId).ToListAsync();
         public async Task<IEnumerable<User>> GetUsersByIdRole(int roleId) => await _entities.Where(x => x.id_role == roleId).ToListAsync();
-        public IQueryable<User> GetAllUser() => _context.User.AsNoTracking();
+        public IQueryable<User> GetAllUser() => _entities.OrderByDescending(s=> s.Id).AsNoTracking();
 
     }
 }

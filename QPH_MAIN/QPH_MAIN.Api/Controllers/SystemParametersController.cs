@@ -9,6 +9,8 @@ using QPH_MAIN.Core.Entities;
 using QPH_MAIN.Core.Interfaces;
 using QPH_MAIN.Core.QueryFilters;
 using QPH_MAIN.Infrastructure.Interfaces;
+using Sieve.Models;
+using Sieve.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,13 +27,13 @@ namespace QPH_MAIN.Api.Controllers
     {
         private readonly ISystemParametersService _systemParametersService;
         private readonly IMapper _mapper;
-        private readonly IUriService _uriService;
+        private readonly SieveProcessor _sieveProcessor;
 
-        public SystemParametersController(ISystemParametersService systemParametersService, IMapper mapper, IUriService uriService)
+        public SystemParametersController(ISystemParametersService systemParametersService, IMapper mapper, SieveProcessor sieveProcessor)
         {
             _systemParametersService = systemParametersService;
             _mapper = mapper;
-            _uriService = uriService;
+            _sieveProcessor = sieveProcessor;
         }
 
         /// <summary>
@@ -45,6 +47,37 @@ namespace QPH_MAIN.Api.Controllers
             var systemParametersService = await _systemParametersService.GetSystemParameters(code);
             var systemParametersServiceDto = _mapper.Map<SystemParametersDto>(systemParametersService);
             var response = new ApiResponse<SystemParametersDto>(systemParametersServiceDto);
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Retrieve all SystemParameters
+        /// </summary>
+        /// <param name="sieveModel"></param>
+        /// <returns></returns>
+        /// 
+        [Authorize]
+        [HttpGet("RetrieveSystemParameters")]
+        public IActionResult GetAllSystemParameters(SieveModel sieveModel)
+        {
+            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            _systemParametersService.SieveProcessor = _sieveProcessor;
+            var entity = _systemParametersService.GetSystemParameters(sieveModel);
+            var entityDTO = _mapper.Map<IEnumerable<SystemParametersDto>>(entity);
+            var metadata = new Metadata
+            {
+                TotalCount = entity.TotalCount,
+                PageSize = entity.PageSize,
+                CurrentPage = entity.CurrentPage,
+                TotalPages = entity.TotalPages,
+                HasNextPage = entity.HasNextPage,
+                HasPreviousPage = entity.HasPreviousPage,
+            };
+            var response = new ApiResponse<IEnumerable<SystemParametersDto>>(entityDTO)
+            {
+                Meta = metadata
+            };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(response);
         }
 
@@ -68,11 +101,11 @@ namespace QPH_MAIN.Api.Controllers
         /// </summary>
         [Authorize]
         [HttpPut]
-        public async Task<IActionResult> Put(string code, SystemParametersDto systemParametersServiceDto)
+        public async Task<IActionResult> Put([FromBody]  SystemParametersDto systemParametersServiceDto)
         {
             if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
             var systemParametersService = _mapper.Map<SystemParameters>(systemParametersServiceDto);
-            systemParametersService.Code = code;
+            systemParametersService.Code = systemParametersServiceDto.Code;//code;
             var result = await _systemParametersService.UpdateSystemParameters(systemParametersService);
             var response = new ApiResponse<bool>(result);
             return Ok(response);

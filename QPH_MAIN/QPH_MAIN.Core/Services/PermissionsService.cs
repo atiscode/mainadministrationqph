@@ -5,6 +5,8 @@ using QPH_MAIN.Core.Entities;
 using QPH_MAIN.Core.Exceptions;
 using QPH_MAIN.Core.Interfaces;
 using QPH_MAIN.Core.QueryFilters;
+using Sieve.Models;
+using Sieve.Services;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,7 +16,7 @@ namespace QPH_MAIN.Core.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly PaginationOptions _paginationOptions;
-
+        public ISieveProcessor SieveProcessor { get; set; }
         public PermissionsService(IUnitOfWork unitOfWork, IOptions<PaginationOptions> options)
         {
             _unitOfWork = unitOfWork;
@@ -23,27 +25,18 @@ namespace QPH_MAIN.Core.Services
 
         public async Task<Permissions> GetPermission(int id) => await _unitOfWork.PermissionsRepository.GetById(id);
 
-        public PagedList<Permissions> GetPermissions(PermissionsQueryFilter filters)
+        public PagedList<Permissions> GetPermissions(SieveModel sieveModel)
         {
-            filters.PageNumber = filters.PageNumber == 0 ? _paginationOptions.DefaultPageNumber : filters.PageNumber;
-            filters.PageSize = filters.PageSize == 0 ? _paginationOptions.DefaultPageSize : filters.PageSize;
-            var permissions = _unitOfWork.PermissionsRepository.GetAll();
-            if(filters.filter != null)
+            var entityFilter = _unitOfWork.PermissionsRepository.GetAllPermissions();
+            var page = sieveModel?.Page ?? 1;
+            var pageSize = sieveModel?.PageSize ?? 10;
+
+            if (sieveModel != null)
             {
-                permissions = permissions.Where(x => x.permission.ToLower().Contains(filters.filter.ToLower()));
+                // apply pagination in a later step
+                entityFilter = SieveProcessor.Apply(sieveModel, entityFilter, applyPagination: false);
             }
-            if(filters.Name != null)
-            {
-                permissions = permissions.Where(x => x.permission == filters.Name);
-            }
-            if (filters.orderedBy != null && filters.orderedBy.Count() > 0)
-            {
-                foreach (var sortM in filters.orderedBy)
-                {
-                    permissions = permissions.OrderBy(sortM.PairAsSqlExpression);
-                }
-            }
-            var pagedPosts = PagedList<Permissions>.Create(permissions, filters.PageNumber, filters.PageSize);
+            var pagedPosts = PagedList<Permissions>.CreateFromQuerable(entityFilter, page, pageSize);
             return pagedPosts;
         }
 

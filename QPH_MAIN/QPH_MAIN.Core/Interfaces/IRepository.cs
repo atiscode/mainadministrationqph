@@ -10,6 +10,7 @@ namespace QPH_MAIN.Core.Interfaces
         Task<T> GetById(int id);
         Task Add(T entity);
         void Update(T entity);
+        void Update(T oldEntity, T entity);
         Task Delete(int id);
     }
 }
