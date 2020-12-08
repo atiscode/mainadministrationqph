@@ -11,11 +11,11 @@ namespace QPH_MAIN.Core.Interfaces
     {
         //PagedList<Roles> GetRoles(RolesQueryFilter filters);
         ISieveProcessor SieveProcessor { get; set; }
-        PagedList<Roles> GetRoles(SieveModel sieveModel);
-        Task<Roles> GetRole(int id);
-        Task<Roles> GetRoleByName(string name);
-        Task InsertRole(Roles role);
-        Task<bool> UpdateRole(Roles role);
+        PagedList<Role> GetRoles(SieveModel sieveModel);
+        Task<Role> GetRole(int id);
+        Task<Role> GetRoleByName(string name);
+        Task InsertRole(Role role);
+        Task<bool> UpdateRole(Role role);
         Task<bool> DeleteRole(int id);
     }
 }

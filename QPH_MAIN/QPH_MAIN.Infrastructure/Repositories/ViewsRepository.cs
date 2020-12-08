@@ -7,11 +7,16 @@ using System.Threading.Tasks;
 
 namespace QPH_MAIN.Infrastructure.Repositories
 {
-    public class ViewsRepository : BaseRepository<Views>, IViewRepository
+    public class ViewsRepository : BaseRepository<View>, IViewRepository
     {
-        public ViewsRepository(QPHContext context) : base(context) { }
-        public async Task<Views> GetViewNameByHierarchyId(int viewId) => await _entities.FirstOrDefaultAsync(x => x.Id == viewId);
-
-        public IQueryable<Views> GetAllViews() => _entities.OrderByDescending(s => s.Id).AsNoTracking();
+        public ViewsRepository(QPHContext context) : base(context) { }        
+        public IQueryable<View> GetAllWithReferences()
+        {
+            return _entities.OrderByDescending(s => s.Id)
+                .Include(t => t.roleViewPermissions)
+                    .ThenInclude(u => u.role)
+                .Include(t => t.roleViewPermissions)
+                    .ThenInclude(u => u.permission);
+        }
     }
 }

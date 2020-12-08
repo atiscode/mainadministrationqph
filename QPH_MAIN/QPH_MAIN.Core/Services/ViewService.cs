@@ -1,12 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
-using OrderByExtensions;
 using QPH_MAIN.Core.CustomEntities;
 using QPH_MAIN.Core.Entities;
 using QPH_MAIN.Core.Interfaces;
-using QPH_MAIN.Core.QueryFilters;
 using Sieve.Models;
 using Sieve.Services;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace QPH_MAIN.Core.Services
@@ -23,11 +20,11 @@ namespace QPH_MAIN.Core.Services
             _paginationOptions = options.Value;
         }
 
-        public async Task<Views> GetView(int id) => await _unitOfWork.ViewRepository.GetById(id);
+        public async Task<View> GetView(int id) => await _unitOfWork.ViewRepository.GetById(id);
 
-        public PagedList<Views> GetViews(SieveModel sieveModel)
+        public PagedList<View> GetViews(SieveModel sieveModel)
         {
-            var entityFilter = _unitOfWork.ViewRepository.GetAllViews();
+            var entityFilter = _unitOfWork.ViewRepository.GetAll();
             var page = sieveModel?.Page ?? 1;
             var pageSize = sieveModel?.PageSize ?? 10;
 
@@ -36,11 +33,11 @@ namespace QPH_MAIN.Core.Services
                 // apply pagination in a later step
                 entityFilter = SieveProcessor.Apply(sieveModel, entityFilter, applyPagination: false);
             }
-            var pagedPosts = PagedList<Views>.CreateFromQuerable(entityFilter, page, pageSize);
+            var pagedPosts = PagedList<View>.CreateFromQuerable(entityFilter, page, pageSize);
             return pagedPosts;
         }
 
-        public async Task InsertView(Views views)
+        public async Task InsertView(View views)
         {
             await _unitOfWork.ViewRepository.Add(views);
             await _unitOfWork.SaveChangesAsync();
@@ -53,7 +50,7 @@ namespace QPH_MAIN.Core.Services
             return true;
         }
 
-        public async Task<bool> UpdateView(Views views)
+        public async Task<bool> UpdateView(View views)
         {
             var existingView = await _unitOfWork.ViewRepository.GetById(views.Id);
             existingView.name = views.name;
@@ -66,29 +63,34 @@ namespace QPH_MAIN.Core.Services
 
         public async Task<bool> RebuildHierarchy(Tree tree, int idUser)
         {
-            await _unitOfWork.UserViewRepository.Add(new UserView { userId = idUser , children = tree.son, parent = tree.parent });
-            if(tree.cards != null && tree.cards.Count > 0)
-            {
-                foreach (var card in tree.cards)
-                {
-                    await _unitOfWork.UserCardGrantedRepository.Add(new UserCardGranted { id_card = card.Id, id_user = idUser });
-                    await _unitOfWork.SaveChangesAsync();
-                    foreach (var permission in tree.permissions)
-                    {
-                        if (permission.statuses == 1) await _unitOfWork.UserCardPermissionRepository.Add(new UserCardPermission { id_permission = permission.id, id_card_granted = await _unitOfWork.UserCardGrantedRepository.GetByCardAndUser(card.Id, idUser) });
-                    }
-                }
-            }
-            if (tree.Children.Count > 0)
-            {
-                foreach(var sonTree in tree.Children) {
-                    await RebuildHierarchy(sonTree, idUser);
-                }
-            }
-            await _unitOfWork.SaveChangesAsync();
+            //await _unitOfWork.UserViewRepository.Add(new UserView { userId = idUser , children = tree.son, parent = tree.parent });
+            //if(tree.cards != null && tree.cards.Count > 0)
+            //{
+            //    foreach (var card in tree.cards)
+            //    {
+            //        await _unitOfWork.UserCardGrantedRepository.Add(new UserCardGranted { id_card = card.Id, id_user = idUser });
+            //        await _unitOfWork.SaveChangesAsync();
+            //        foreach (var permission in tree.permissions)
+            //        {
+            //            if (permission.statuses == 1) await _unitOfWork.UserCardPermissionRepository.Add(new UserCardPermission { id_permission = permission.id, id_card_granted = await _unitOfWork.UserCardGrantedRepository.GetByCardAndUser(card.Id, idUser) });
+            //        }
+            //    }
+            //}
+            //if (tree.Children.Count > 0)
+            //{
+            //    foreach(var sonTree in tree.Children) {
+            //        await RebuildHierarchy(sonTree, idUser);
+            //    }
+            //}
+            //await _unitOfWork.SaveChangesAsync();
             return true;
         }
 
-        public async Task DeleteHierarchyByUserId(int userId) => await _unitOfWork.UserViewRepository.RemoveByUserId(userId);
+        public Task DeleteHierarchyByUserId(int userId)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        //public async Task DeleteHierarchyByUserId(int userId) => await _unitOfWork.UserViewRepository.RemoveByUserId(userId);
     }
 }

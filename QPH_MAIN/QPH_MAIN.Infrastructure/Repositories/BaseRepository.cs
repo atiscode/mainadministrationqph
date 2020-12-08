@@ -17,7 +17,7 @@ namespace QPH_MAIN.Infrastructure.Repositories
             _context = context;
             _entities = context.Set<T>();
         }
-        public IEnumerable<T> GetAll() => _entities.AsEnumerable();
+        public IQueryable<T> GetAll() => _entities.AsQueryable<T>();
         public async Task<T> GetById(int id) => await _entities.FindAsync(id);
         public async Task Add(T entity) => await _entities.AddAsync(entity);
         public void Update(T entity) => _entities.Update(entity);

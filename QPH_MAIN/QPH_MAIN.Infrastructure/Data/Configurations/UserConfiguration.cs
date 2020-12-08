@@ -15,11 +15,11 @@ namespace QPH_MAIN.Infrastructure.Data.Configurations
                 .HasColumnName("id")
                 .UseIdentityColumn();
 
-            builder.Property(e => e.id_role)
-                .HasColumnName("id_role");
+            //builder.Property(e => e.id_role)
+            //    .HasColumnName("id_role");
 
-            builder.Property(e => e.id_enterprise)
-                .HasColumnName("id_enterprise");
+            //builder.Property(e => e.id_enterprise)
+            //    .HasColumnName("id_enterprise");
 
             builder.Property(e => e.id_country)
                 .HasColumnName("id_country");
@@ -70,19 +70,7 @@ namespace QPH_MAIN.Infrastructure.Data.Configurations
                 .WithMany(p => p.users)
                 .HasForeignKey(d => d.id_country)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_User_Country");
-
-            builder.HasOne(u => u.roles)
-                .WithMany(p => p.users)
-                .HasForeignKey(d => d.id_role)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_User_Roles");
-
-            builder.HasOne(d => d.enterprise)
-                .WithMany(p => p.users)
-                .HasForeignKey(d => d.id_enterprise)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_User_Enterprise");
+                .HasConstraintName("FK_User_Country");            
         }
     }
 }

@@ -3,20 +3,20 @@ using System.Collections.Generic;
 
 namespace QPH_MAIN.Core.Entities
 {
-    public partial class Views : BaseEntity
+    public partial class View : BaseEntity
     {
-        public Views()
+        public View()
         {
-            userView = new HashSet<UserView>();
-            viewCard = new HashSet<ViewCard>();
+            roleViewPermissions = new HashSet<RoleViewPermission>();
         }
+
         [Sieve(CanFilter = true, CanSort = true)]
         public string code { get; set; }
         [Sieve(CanFilter = true, CanSort = true)]
         public string name { get; set; }
         [Sieve(CanFilter = true, CanSort = true)]
         public string route { get; set; }
-        public virtual ICollection<UserView> userView { get; set; }
-        public virtual ICollection<ViewCard> viewCard { get; set; }
+        public int? parent { get; set; }
+        public virtual ICollection<RoleViewPermission> roleViewPermissions { get; set; }
     }
 }

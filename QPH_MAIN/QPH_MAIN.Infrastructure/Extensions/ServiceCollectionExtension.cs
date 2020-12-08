@@ -45,6 +45,7 @@ namespace QPH_MAIN.Infrastructure.Extensions
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddScoped(typeof(ICodeRepository<>), typeof(BaseCodeRepository<>));
             services.AddScoped<SieveProcessor>();
+            services.AddTransient<IApplicationService, ApplicationService>();
             services.AddTransient<ISystemParametersService, SystemParametersService>();
             services.AddTransient<ICityService, CityService>();
             services.AddTransient<ICardsService, CardsService>();
@@ -54,7 +55,7 @@ namespace QPH_MAIN.Infrastructure.Extensions
             services.AddTransient<IBlacklistService, BlacklistService>();
             services.AddTransient<IEnterpriseHierarchyCatalogService, CatalogHierarchyViewService>();
             services.AddTransient<ITableColumnService, TableColumnService>();
-            services.AddTransient<IPermissionsService, PermissionsService>();
+            services.AddTransient<IPermissionService, PermissionService>();
             services.AddTransient<IRegionService, RegionService>();
             services.AddTransient<IRolesService, RolesService>();
             services.AddTransient<ITreeService, TreeService>();
@@ -62,12 +63,15 @@ namespace QPH_MAIN.Infrastructure.Extensions
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IUserCardGrantedService, UserCardGrantedService>();
             services.AddTransient<IUserCardPermissionService, UserCardPermissionService>();
+            services.AddTransient<IRoleViewPermissionService, RoleViewPermissionService>();
             services.AddTransient<IViewCardService, ViewCardService>();
             services.AddTransient<IViewService, ViewService>();
             services.AddTransient<ICatalogService, CatalogService>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+
             services.AddSingleton<IPasswordService, PasswordService>();
-            services.AddSingleton<IRoutingService, RoutingService>();
+            services.AddSingleton<IRoutingService, RoutingService>();            
             services.AddSingleton<IUriService>(provider =>
             {
                 var accesor = provider.GetRequiredService<IHttpContextAccessor>();

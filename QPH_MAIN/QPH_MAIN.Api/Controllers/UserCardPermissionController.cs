@@ -41,11 +41,12 @@ namespace QPH_MAIN.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserCardPermission(int id)
         {
-            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var userCardPermission = await _userCardPermissionService.GetUserCardPermission(id);
-            var userCardPermissionDto = _mapper.Map<UserCardPermissionDto>(userCardPermission);
-            var response = new ApiResponse<UserCardPermissionDto>(userCardPermissionDto);
-            return Ok(response);
+            //if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            //var userCardPermission = await _userCardPermissionService.GetUserCardPermission(id);
+            //var userCardPermissionDto = _mapper.Map<UserCardPermissionDto>(userCardPermission);
+            //var response = new ApiResponse<UserCardPermissionDto>(userCardPermissionDto);
+            //return Ok(response);
+            return Ok();
         }
 
         /// <summary>
@@ -55,12 +56,13 @@ namespace QPH_MAIN.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] UserCardPermissionDto userCardPermissionDto)
         {
-            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var userCardPermission = _mapper.Map<UserCardPermission>(userCardPermissionDto);
-            await _userCardPermissionService.InsertUserCardPermission(userCardPermission);
-            userCardPermissionDto = _mapper.Map<UserCardPermissionDto>(userCardPermission);
-            var response = new ApiResponse<UserCardPermissionDto>(userCardPermissionDto);
-            return Ok(response);
+            //if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            //var userCardPermission = _mapper.Map<UserCardPermission>(userCardPermissionDto);
+            //await _userCardPermissionService.InsertUserCardPermission(userCardPermission);
+            //userCardPermissionDto = _mapper.Map<UserCardPermissionDto>(userCardPermission);
+            //var response = new ApiResponse<UserCardPermissionDto>(userCardPermissionDto);
+            //return Ok(response);
+            return Ok();
         }
 
         /// <summary>
@@ -70,12 +72,13 @@ namespace QPH_MAIN.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Put(int id, UserCardPermissionDto userCardPermissionDto)
         {
-            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var userCardPermission = _mapper.Map<UserCardPermission>(userCardPermissionDto);
-            userCardPermission.Id = id;
-            var result = await _userCardPermissionService.UpdateUserCardPermission(userCardPermission);
-            var response = new ApiResponse<bool>(result);
-            return Ok(response);
+            //if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            //var userCardPermission = _mapper.Map<UserCardPermission>(userCardPermissionDto);
+            //userCardPermission.Id = id;
+            //var result = await _userCardPermissionService.UpdateUserCardPermission(userCardPermission);
+            //var response = new ApiResponse<bool>(result);
+            //return Ok(response);
+            return Ok();
         }
 
         /// <summary>
@@ -85,10 +88,11 @@ namespace QPH_MAIN.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var result = await _userCardPermissionService.DeleteUserCardPermission(id);
-            var response = new ApiResponse<bool>(result);
-            return Ok(response);
+            //if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            //var result = await _userCardPermissionService.DeleteUserCardPermission(id);
+            //var response = new ApiResponse<bool>(result);
+            //return Ok(response);
+            return Ok();
         }
     }
 }

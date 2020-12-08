@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace QPH_MAIN.Infrastructure.Repositories
 {
-    public class ViewCardRepository : BaseRepository<ViewCard>, IViewCardRepository
-    {
-        public ViewCardRepository(QPHContext context) : base(context) { }
-    }
+    //public class ViewCardRepository : BaseRepository<ViewCard>, IViewCardRepository
+    //{
+    //    public ViewCardRepository(QPHContext context) : base(context) { }
+    //}
 }

@@ -8,17 +8,14 @@ using System.Threading.Tasks;
 
 namespace QPH_MAIN.Infrastructure.Repositories
 {
-    public class UserCardPermissionRepository : BaseRepository<UserCardPermission>, IUserCardPermissionRepository
+    public class UserCardPermissionRepository 
     {
-        QPHContext _context;
-        public UserCardPermissionRepository(QPHContext context) : base(context) {
-            _context = context;
-        }
+        QPHContext _context;        
 
         public async Task RemoveByUserId(int userId)
         {
-            var listCardsGrantedId = await _context.UserCardGranted.Where(u => u.id_user == userId).Select(u => u.Id).ToListAsync();
-            _entities.RemoveRange(_entities.Where(e => listCardsGrantedId.Contains(e.id_card_granted)));
+            //var listCardsGrantedId = await _context.UserCardGranted.Where(u => u.id_user == userId).Select(u => u.Id).ToListAsync();
+            //_entities.RemoveRange(_entities.Where(e => listCardsGrantedId.Contains(e.id_card_granted)));
         }
     }
 }

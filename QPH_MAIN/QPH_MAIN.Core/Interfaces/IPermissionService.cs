@@ -7,13 +7,13 @@ using Sieve.Services;
 
 namespace QPH_MAIN.Core.Interfaces
 {
-    public interface IPermissionsService
+    public interface IPermissionService
     {
         ISieveProcessor SieveProcessor { get; set; }
-        PagedList<Permissions> GetPermissions(SieveModel sieveModel);
-        Task<Permissions> GetPermission(int id);
-        Task InsertPermission(Permissions permissions);
-        Task<bool> UpdatePermission(Permissions permissions);
+        PagedList<Permission> GetPermissions(SieveModel sieveModel);
+        Task<Permission> GetPermission(int id);
+        Task InsertPermission(Permission permissions);
+        Task<bool> UpdatePermission(Permission permissions);
         Task<bool> DeletePermission(int id);
     }
 }

@@ -4,11 +4,11 @@ using QPH_MAIN.Core.Entities;
 
 namespace QPH_MAIN.Infrastructure.Data.Configurations
 {
-    public class ViewsConfiguration : IEntityTypeConfiguration<Views>
+    public class ViewConfiguration : IEntityTypeConfiguration<View>
     {
-        public void Configure(EntityTypeBuilder<Views> builder)
+        public void Configure(EntityTypeBuilder<View> builder)
         {
-            builder.ToTable("Views");
+            builder.ToTable("View");
 
             builder.HasKey(e => e.Id);
 
@@ -32,6 +32,9 @@ namespace QPH_MAIN.Infrastructure.Data.Configurations
                 .IsRequired()
                 .HasColumnName("route")
                 .HasMaxLength(300);
+
+            builder.Property(e => e.parent)
+                .HasColumnName("parent");
         }
     }
 }

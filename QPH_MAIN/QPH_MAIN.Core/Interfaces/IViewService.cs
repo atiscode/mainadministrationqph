@@ -10,11 +10,11 @@ namespace QPH_MAIN.Core.Interfaces
     public interface IViewService
     {
         ISieveProcessor SieveProcessor { get; set; }
-        PagedList<Views> GetViews(SieveModel sieveModel);
-        Task<Views> GetView(int id);
-        Task InsertView(Views views);
+        PagedList<View> GetViews(SieveModel sieveModel);
+        Task<View> GetView(int id);
+        Task InsertView(View views);
         Task<bool> RebuildHierarchy(Tree tree, int idUser);
-        Task<bool> UpdateView(Views views);
+        Task<bool> UpdateView(View views);
         Task<bool> DeleteView(int id);
         Task DeleteHierarchyByUserId(int userId);
     }

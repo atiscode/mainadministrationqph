@@ -1,12 +1,10 @@
 ﻿using QPH_MAIN.Core.Entities;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace QPH_MAIN.Core.Interfaces
 {
-    public interface IViewRepository : IRepository<Views>
+    public interface IViewRepository : IRepository<View>
     {
-        Task<Views> GetViewNameByHierarchyId(int viewId);
-        IQueryable<Views> GetAllViews();
+        IQueryable<View> GetAllWithReferences();
     }
 }

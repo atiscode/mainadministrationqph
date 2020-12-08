@@ -13,31 +13,31 @@ namespace QPH_MAIN.Core.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<UserView> GetHierarchy(int parentId) => await _unitOfWork.UserViewRepository.GetHierarchyByParent(parentId);
+        //public async Task<UserView> GetHierarchy(int parentId) => await _unitOfWork.UserViewRepository.GetHierarchyByParent(parentId);
 
-        public async Task InsertHierarchy(UserView hierarchyView)
-        {
-            await _unitOfWork.UserViewRepository.Add(hierarchyView);
-            await _unitOfWork.SaveChangesAsync();
-        }
+        //public async Task InsertHierarchy(UserView hierarchyView)
+        //{
+        //    await _unitOfWork.UserViewRepository.Add(hierarchyView);
+        //    await _unitOfWork.SaveChangesAsync();
+        //}
 
-        public async Task<bool> UpdateHierarchyView(UserView hierarchyView)
-        {
-            var existingView = await _unitOfWork.UserViewRepository.GetById(hierarchyView.Id);
-            existingView.parent = hierarchyView.parent;
-            existingView.children = hierarchyView.children;
-            _unitOfWork.UserViewRepository.Update(existingView);
-            await _unitOfWork.SaveChangesAsync();
-            return true;
-        }
+        //public async Task<bool> UpdateHierarchyView(UserView hierarchyView)
+        //{
+        //    var existingView = await _unitOfWork.UserViewRepository.GetById(hierarchyView.Id);
+        //    existingView.parent = hierarchyView.parent;
+        //    existingView.children = hierarchyView.children;
+        //    _unitOfWork.UserViewRepository.Update(existingView);
+        //    await _unitOfWork.SaveChangesAsync();
+        //    return true;
+        //}
 
-        public async Task<bool> DeleteHierarchyView(int id)
-        {
-            await _unitOfWork.UserViewRepository.Delete(id);
-            await _unitOfWork.SaveChangesAsync();
-            return true;
-        }
+        //public async Task<bool> DeleteHierarchyView(int id)
+        //{
+        //    await _unitOfWork.UserViewRepository.Delete(id);
+        //    await _unitOfWork.SaveChangesAsync();
+        //    return true;
+        //}
 
-        public async Task RemoveByUserId(int userId) => await _unitOfWork.UserViewRepository.RemoveByUserId(userId);
+        //public async Task RemoveByUserId(int userId) => await _unitOfWork.UserViewRepository.RemoveByUserId(userId);
     }
 }

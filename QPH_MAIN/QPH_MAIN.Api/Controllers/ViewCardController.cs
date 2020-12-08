@@ -41,11 +41,12 @@ namespace QPH_MAIN.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetViewCard(int id)
         {
-            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var viewCard = await _viewCardService.GetViewCard(id);
-            var viewCardDto = _mapper.Map<ViewCardDto>(viewCard);
-            var response = new ApiResponse<ViewCardDto>(viewCardDto);
-            return Ok(response);
+            //if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            //var viewCard = await _viewCardService.GetViewCard(id);
+            //var viewCardDto = _mapper.Map<ViewCardDto>(viewCard);
+            //var response = new ApiResponse<ViewCardDto>(viewCardDto);
+            //return Ok(response);
+            return Ok();
         }
 
         /// <summary>
@@ -55,12 +56,13 @@ namespace QPH_MAIN.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ViewCardDto viewCardDto)
         {
-            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var viewCard = _mapper.Map<ViewCard>(viewCardDto);
-            await _viewCardService.InsertViewCard(viewCard);
-            viewCardDto = _mapper.Map<ViewCardDto>(viewCard);
-            var response = new ApiResponse<ViewCardDto>(viewCardDto);
-            return Ok(response);
+            //if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            //var viewCard = _mapper.Map<ViewCard>(viewCardDto);
+            //await _viewCardService.InsertViewCard(viewCard);
+            //viewCardDto = _mapper.Map<ViewCardDto>(viewCard);
+            //var response = new ApiResponse<ViewCardDto>(viewCardDto);
+            //return Ok(response);
+            return Ok();
         }
 
         /// <summary>
@@ -70,12 +72,13 @@ namespace QPH_MAIN.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Put(int id, ViewCardDto viewCardDto)
         {
-            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var viewCard = _mapper.Map<ViewCard>(viewCardDto);
-            viewCard.Id = id;
-            var result = await _viewCardService.UpdateViewCard(viewCard);
-            var response = new ApiResponse<bool>(result);
-            return Ok(response);
+            //if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            //var viewCard = _mapper.Map<ViewCard>(viewCardDto);
+            //viewCard.Id = id;
+            //var result = await _viewCardService.UpdateViewCard(viewCard);
+            //var response = new ApiResponse<bool>(result);
+            //return Ok(response);
+            return Ok();
         }
 
         /// <summary>
@@ -85,10 +88,11 @@ namespace QPH_MAIN.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var result = await _viewCardService.DeleteViewCard(id);
-            var response = new ApiResponse<bool>(result);
-            return Ok(response);
+            //if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            //var result = await _viewCardService.DeleteViewCard(id);
+            //var response = new ApiResponse<bool>(result);
+            //return Ok(response);
+            return Ok();
         }
     }
 }

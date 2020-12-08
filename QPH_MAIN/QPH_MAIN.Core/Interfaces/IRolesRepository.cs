@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace QPH_MAIN.Core.Interfaces
 {
-    public interface IRolesRepository : IRepository<Roles>
+    public interface IRolesRepository : IRepository<Role>
     {
-        Task<Roles> GetByName(string name);
-        IQueryable<Roles> GetAllRoles();
+        Task<Role> GetByName(string name);
+        IQueryable<Role> GetAllWithReferences();
     }
 }

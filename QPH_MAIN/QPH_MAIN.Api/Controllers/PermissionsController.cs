@@ -25,12 +25,12 @@ namespace QPH_MAIN.Api.Controllers
     [Route("api/[controller]")]
     public class PermissionsController : ControllerBase
     {
-        private readonly IPermissionsService _permissionsService;
+        private readonly IPermissionService _permissionsService;
         private readonly IMapper _mapper;
         private readonly IUriService _uriService;
         private readonly SieveProcessor _sieveProcessor;
 
-        public PermissionsController(IPermissionsService permissionsService, IMapper mapper, IUriService uriService, SieveProcessor sieveProcessor)
+        public PermissionsController(IPermissionService permissionsService, IMapper mapper, IUriService uriService, SieveProcessor sieveProcessor)
         {
             _permissionsService = permissionsService;
             _mapper = mapper;
@@ -92,7 +92,7 @@ namespace QPH_MAIN.Api.Controllers
         public async Task<IActionResult> Post([FromBody] PermissionsDto permissionDto)
         {
             if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var permission = _mapper.Map<Permissions>(permissionDto);
+            var permission = _mapper.Map<Permission>(permissionDto);
             await _permissionsService.InsertPermission(permission);
             permissionDto = _mapper.Map<PermissionsDto>(permission);
             var response = new ApiResponse<PermissionsDto>(permissionDto);
@@ -107,7 +107,7 @@ namespace QPH_MAIN.Api.Controllers
         public async Task<IActionResult> Put(int id, PermissionsDto permissionDto)
         {
             if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var permission = _mapper.Map<Permissions>(permissionDto);
+            var permission = _mapper.Map<Permission>(permissionDto);
             permission.Id = id;
             var result = await _permissionsService.UpdatePermission(permission);
             var response = new ApiResponse<bool>(result);

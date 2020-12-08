@@ -65,17 +65,22 @@ namespace QPH_MAIN.Core.Services
 
         public async Task<bool> RebuildHierarchy(CatalogTree tree, int idEnterprise)
         {
-            await _unitOfWork.EnterpriseHierarchyCatalogRepository.Add(new EnterpriseHierarchyCatalog { id_enterprise = idEnterprise , children = tree.son, parent = tree.parent });
-            if (tree.Children.Count > 0)
-            {
-                foreach(var sonTree in tree.Children) {
-                    await RebuildHierarchy(sonTree, idEnterprise);
-                }
-            }
-            await _unitOfWork.SaveChangesAsync();
+            //await _unitOfWork.EnterpriseHierarchyCatalogRepository.Add(new EnterpriseHierarchyCatalog { id_enterprise = idEnterprise , children = tree.son, parent = tree.parent });
+            //if (tree.Children.Count > 0)
+            //{
+            //    foreach(var sonTree in tree.Children) {
+            //        await RebuildHierarchy(sonTree, idEnterprise);
+            //    }
+            //}
+            //await _unitOfWork.SaveChangesAsync();
             return true;
         }
 
-        public async Task DeleteHierarchyByEnterpriseId(int enterpriseId) => await _unitOfWork.EnterpriseHierarchyCatalogRepository.RemoveByEntepriseId(enterpriseId);
+        public Task DeleteHierarchyByEnterpriseId(int enterpriseId)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        //public async Task DeleteHierarchyByEnterpriseId(int enterpriseId) => await _unitOfWork.EnterpriseHierarchyCatalogRepository.RemoveByEntepriseId(enterpriseId);
     }
 }

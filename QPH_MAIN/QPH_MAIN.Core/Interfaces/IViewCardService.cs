@@ -7,9 +7,9 @@ namespace QPH_MAIN.Core.Interfaces
 {
     public interface IViewCardService
     {
-        Task<ViewCard> GetViewCard(int id);
-        Task InsertViewCard(ViewCard viewCard);
-        Task<bool> UpdateViewCard(ViewCard viewCard);
-        Task<bool> DeleteViewCard(int id);
+        //Task<ViewCard> GetViewCard(int id);
+        //Task InsertViewCard(ViewCard viewCard);
+        //Task<bool> UpdateViewCard(ViewCard viewCard);
+        //Task<bool> DeleteViewCard(int id);
     }
 }

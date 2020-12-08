@@ -107,8 +107,8 @@ namespace QPH_MAIN.Core.Services
 
         public async Task<User> InsertUser(User user)
         {
-            if (await _unitOfWork.RolesRepository.GetById(user.id_role) == null) throw new BusinessException("Role doesn't exist");
-            if (await _unitOfWork.EnterpriseRepository.GetById(user.id_enterprise) == null) throw new BusinessException("Enterprise doesn't exist");
+            //if (await _unitOfWork.RolesRepository.GetById(user.id_role) == null) throw new BusinessException("Role doesn't exist");
+            //if (await _unitOfWork.EnterpriseRepository.GetById(user.id_enterprise) == null) throw new BusinessException("Enterprise doesn't exist");
             if (await _unitOfWork.CountryRepository.GetById(user.id_country) == null) throw new BusinessException("Country doesn't exist");
             user.activation_code = GenerateActivationCode();
             user.status = false;
@@ -136,8 +136,6 @@ namespace QPH_MAIN.Core.Services
         public async Task<bool> UpdateUser(User user)
         {
             var existingUser = await _unitOfWork.UserRepository.GetById(user.Id);
-            existingUser.id_role = user.id_role;
-            existingUser.id_enterprise = user.id_enterprise;
             existingUser.id_country = user.id_country;
             existingUser.nickname = user.nickname;
             existingUser.firstName = user.firstName;
@@ -220,18 +218,18 @@ namespace QPH_MAIN.Core.Services
         public async Task<UserDetailDto> GetUserDetail(int userId)
         {
             var existingUser = await _unitOfWork.UserRepository.GetDetailUser(userId);
-            existingUser.enterprise.users = null;
+            //existingUser.enterprise.users = null;
             existingUser.country.users = null;
             existingUser.country.regions = null;
-            existingUser.roles.users = null;
+            //existingUser.roles.users = null;
             return new UserDetailDto
             {
-                Id_role = existingUser.roles.Id,
-                Id_enterprise = existingUser.enterprise.Id,
-                Id_country = existingUser.country.Id,
-                Country = existingUser.country,
-                Email = existingUser.email,
-                Enterprise = existingUser.enterprise,
+                //Id_role = existingUser.roles.Id,
+                //Id_enterprise = existingUser.enterprise.Id,
+                //Id_country = existingUser.country.Id,
+                //Country = existingUser.country,
+                //Email = existingUser.email,
+                //Enterprise = existingUser.enterprise,
                 Nickname = existingUser.nickname,
                 Phone_number = existingUser.phone_number,
                 Profile_picture = existingUser.profile_picture,

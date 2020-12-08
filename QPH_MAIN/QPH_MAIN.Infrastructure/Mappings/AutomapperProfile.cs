@@ -16,10 +16,10 @@ namespace QPH_MAIN.Infrastructure.Mappings
             CreateMap<RegionDto, Region>();
             CreateMap<Country, CountryDto>();
             CreateMap<CountryDto, Country>();
-            CreateMap<Roles, RolesDto>();
-            CreateMap<RolesDto, Roles>();
-            CreateMap<Views, ViewsDto>();
-            CreateMap<ViewsDto, Views>();
+            CreateMap<Role, RolesDto>();
+            CreateMap<RolesDto, Role>();
+            CreateMap<View, ViewsDto>();
+            CreateMap<ViewsDto, View>();
             CreateMap<Catalog, CatalogDto>();
             CreateMap<CatalogDto, Catalog>();
             CreateMap<Blacklist, BlacklistDto>();
@@ -30,24 +30,30 @@ namespace QPH_MAIN.Infrastructure.Mappings
             CreateMap<TableColumnDto, TableColumn>();
             CreateMap<CatalogTree, CatalogTreeDto>();
             CreateMap<CatalogTreeDto, CatalogTree>();
-            CreateMap<UserView, UserViewDto>();
-            CreateMap<UserViewDto, UserView>();
-            CreateMap<EnterpriseHierarchyCatalog, EnterpriseHierarchyCatalogDto>();
-            CreateMap<EnterpriseHierarchyCatalogDto, EnterpriseHierarchyCatalog>();
+            //CreateMap<UserView, UserViewDto>();
+            //CreateMap<UserViewDto, UserView>();
+            //CreateMap<EnterpriseHierarchyCatalog, EnterpriseHierarchyCatalogDto>();
+            //CreateMap<EnterpriseHierarchyCatalogDto, EnterpriseHierarchyCatalog>();
             CreateMap<Enterprise, EnterpriseDto>();
             CreateMap<EnterpriseDto, Enterprise>();
             CreateMap<User, UserDto>();
             CreateMap<UserDto, User>();
-            CreateMap<PermissionsDto, Permissions>();
-            CreateMap<Permissions, PermissionsDto>();
-            CreateMap<CardsDto, Cards>();
-            CreateMap<Cards, CardsDto>();
-            CreateMap<ViewCardDto, ViewCard>();
-            CreateMap<ViewCard, ViewCardDto>();
-            CreateMap<UserCardGrantedDto, UserCardGranted>();
-            CreateMap<UserCardGranted, UserCardGrantedDto>();
-            CreateMap<UserCardPermissionDto, UserCardPermission>();
-            CreateMap<UserCardPermission, UserCardPermissionDto>();
+            CreateMap<PermissionsDto, Permission>();
+            CreateMap<Permission, PermissionsDto>();
+            CreateMap<RoleViewPermission, RoleViewPermissionDto>()
+                .ForMember(t => t.rolename, u => u.MapFrom(t => t.role.rolename))
+                .ForMember(t => t.view, u => u.MapFrom(t => t.view.name))
+                .ForMember(t => t.permission, u => u.MapFrom(t => t.permission.permission));
+
+            CreateMap<RoleViewPermissionDto, RoleViewPermission>();
+            //CreateMap<CardsDto, Cards>();
+            //CreateMap<Cards, CardsDto>();
+            //CreateMap<ViewCardDto, ViewCard>();
+            //CreateMap<ViewCard, ViewCardDto>();
+            //CreateMap<UserCardGrantedDto, UserCardGranted>();
+            //CreateMap<UserCardGranted, UserCardGrantedDto>();
+            //CreateMap<UserCardPermissionDto, UserCardPermission>();
+            //CreateMap<UserCardPermission, UserCardPermissionDto>();
             CreateMap<Security, SecurityDto>().ReverseMap();
         }
     }

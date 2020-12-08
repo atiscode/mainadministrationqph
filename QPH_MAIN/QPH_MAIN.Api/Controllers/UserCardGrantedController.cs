@@ -41,11 +41,12 @@ namespace QPH_MAIN.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserCardGranted(int id)
         {
-            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var userCardGranted = await _userCardGrantedService.GetUserCardGranted(id);
-            var userCardGrantedDto = _mapper.Map<UserCardGrantedDto>(userCardGranted);
-            var response = new ApiResponse<UserCardGrantedDto>(userCardGrantedDto);
-            return Ok(response);
+            //if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            //var userCardGranted = await _userCardGrantedService.GetUserCardGranted(id);
+            //var userCardGrantedDto = _mapper.Map<UserCardGrantedDto>(userCardGranted);
+            //var response = new ApiResponse<UserCardGrantedDto>(userCardGrantedDto);
+            //return Ok(response);
+            return Ok();
         }
 
         /// <summary>
@@ -55,12 +56,13 @@ namespace QPH_MAIN.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] UserCardGrantedDto userCardGrantedDto)
         {
-            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var userCardGranted = _mapper.Map<UserCardGranted>(userCardGrantedDto);
-            await _userCardGrantedService.InsertUserCardGranted(userCardGranted);
-            userCardGrantedDto = _mapper.Map<UserCardGrantedDto>(userCardGranted);
-            var response = new ApiResponse<UserCardGrantedDto>(userCardGrantedDto);
-            return Ok(response);
+            //if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            //var userCardGranted = _mapper.Map<UserCardGranted>(userCardGrantedDto);
+            //await _userCardGrantedService.InsertUserCardGranted(userCardGranted);
+            //userCardGrantedDto = _mapper.Map<UserCardGrantedDto>(userCardGranted);
+            //var response = new ApiResponse<UserCardGrantedDto>(userCardGrantedDto);
+            //return Ok(response);
+            return Ok();
         }
 
         /// <summary>
@@ -70,12 +72,13 @@ namespace QPH_MAIN.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Put(int id, UserCardGrantedDto userCardGrantedDto)
         {
-            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var userCardGranted = _mapper.Map<UserCardGranted>(userCardGrantedDto);
-            userCardGranted.Id = id;
-            var result = await _userCardGrantedService.UpdateUserCardGranted(userCardGranted);
-            var response = new ApiResponse<bool>(result);
-            return Ok(response);
+            //if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            //var userCardGranted = _mapper.Map<UserCardGranted>(userCardGrantedDto);
+            //userCardGranted.Id = id;
+            //var result = await _userCardGrantedService.UpdateUserCardGranted(userCardGranted);
+            //var response = new ApiResponse<bool>(result);
+            //return Ok(response);
+            return Ok();
         }
 
         /// <summary>
@@ -85,10 +88,11 @@ namespace QPH_MAIN.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var result = await _userCardGrantedService.DeleteUserCardGranted(id);
-            var response = new ApiResponse<bool>(result);
-            return Ok(response);
+            //if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            //var result = await _userCardGrantedService.DeleteUserCardGranted(id);
+            //var response = new ApiResponse<bool>(result);
+            //return Ok(response);
+            return Ok();
         }
     }
 }
