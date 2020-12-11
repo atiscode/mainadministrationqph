@@ -13,6 +13,7 @@ namespace QPH_MAIN.Core.Entities
         [Sieve(CanFilter = true, CanSort = true)]
         public string permission { get; set; }
         public bool? is_card { get; set; }
+        public bool status { get; set; }
         public virtual ICollection<RoleViewPermission> roleViewPermissions { get; set; }
     }
 }

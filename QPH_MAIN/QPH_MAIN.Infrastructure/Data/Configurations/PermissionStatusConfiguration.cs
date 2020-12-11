@@ -11,9 +11,8 @@ namespace QPH_MAIN.Infrastructure.Data.Configurations
             builder.Property(e => e.id)
                 .HasColumnName("id");
 
-            builder.Property(e => e.statuses)
-                .HasColumnName("status")
-                .HasColumnType("int");
+            builder.Property(e => e.status)
+                .HasColumnName("status");
 
             builder.Property(e => e.permission)
                 .HasColumnName("permission");

@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace QPH_MAIN.Core.Interfaces
 {
-    public interface ITreeRepository : IRepository<Tree>
+    public interface ITreeRepository
     {
-        Task<Tree> GetTreeByUserId(int userId);
+        Task<Tree> GetTreeByUserId(string userName, string aplication, string enterprise);
     }
 }

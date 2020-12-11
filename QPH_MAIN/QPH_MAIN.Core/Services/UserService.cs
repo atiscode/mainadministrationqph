@@ -233,7 +233,7 @@ namespace QPH_MAIN.Core.Services
                 Nickname = existingUser.nickname,
                 Phone_number = existingUser.phone_number,
                 Profile_picture = existingUser.profile_picture,
-                Tree = await _unitOfWork.TreeRepository.GetTreeByUserId(userId)
+                Tree = null,//await _unitOfWork.TreeRepository.GetTreeByUserId(userId)
             };
         }
 

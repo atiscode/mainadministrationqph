@@ -151,8 +151,9 @@ namespace QPH_MAIN.Api.Controllers
         public async Task<IActionResult> ObtainTree()
         {
             if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            string userId = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
-            return Ok(await _treeService.GetHierarchyTreeByUserId(int.Parse(userId)));
+            string userName = User.Claims.FirstOrDefault(c => c.Type == "Username").Value;
+
+            return Ok(await _treeService.GetHierarchyTreeByUserId(userName, "Administration", "Dummy"));
         }
 
         /// <summary>

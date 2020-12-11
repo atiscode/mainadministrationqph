@@ -53,7 +53,7 @@ namespace QPH_MAIN.Core.Services
 
         public PagedList<Role> GetRoles(SieveModel sieveModel)
         {
-            var usersFilter = _unitOfWork.RolesRepository.GetAllWithReferences();
+            var usersFilter = _unitOfWork.RolesRepository.GetAll();
 
             //todo consider
             var page = sieveModel?.Page ?? 1;
