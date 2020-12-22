@@ -7,10 +7,10 @@ namespace QPH_MAIN.Core.Interfaces
 {
     public interface ICardsService
     {
-        PagedList<Cards> GetCards(CardsQueryFilter filters);
-        Task<Cards> GetCard(int id);
-        Task InsertCard(Cards cards);
-        Task<bool> UpdateCard(Cards cards);
-        Task<bool> DeleteCard(int id);
+        //PagedList<Cards> GetCards(CardsQueryFilter filters);
+        //Task<Cards> GetCard(int id);
+        //Task InsertCard(Cards cards);
+        //Task<bool> UpdateCard(Cards cards);
+        //Task<bool> DeleteCard(int id);
     }
 }

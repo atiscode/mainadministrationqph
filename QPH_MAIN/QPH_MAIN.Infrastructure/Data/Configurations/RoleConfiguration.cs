@@ -4,11 +4,11 @@ using QPH_MAIN.Core.Entities;
 
 namespace QPH_MAIN.Infrastructure.Data.Configurations
 {
-    public class RolesConfiguration : IEntityTypeConfiguration<Roles>
+    public class RoleConfiguration : IEntityTypeConfiguration<Role>
     {
-        public void Configure(EntityTypeBuilder<Roles> builder)
+        public void Configure(EntityTypeBuilder<Role> builder)
         {
-            builder.ToTable("Roles");
+            builder.ToTable("Role");
 
             builder.HasKey(e => e.Id);
 

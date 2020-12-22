@@ -7,7 +7,7 @@ namespace QPH_MAIN.Core.Entities
     {
         public Catalog()
         {
-            enterpriseCatalog = new HashSet<EnterpriseHierarchyCatalog>();
+            applicationCatalogs = new HashSet<ApplicationCatalog>();
         }
         [Sieve(CanFilter = true, CanSort = true)]
         public string code { get; set; }
@@ -17,6 +17,6 @@ namespace QPH_MAIN.Core.Entities
         public string description { get; set; }
         [Sieve(CanFilter = true, CanSort = true)]
         public bool status { get; set; }
-        public virtual ICollection<EnterpriseHierarchyCatalog> enterpriseCatalog { get; set; }
+        public virtual ICollection<ApplicationCatalog> applicationCatalogs { get; set; }
     }
 }

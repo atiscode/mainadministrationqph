@@ -99,7 +99,7 @@ namespace QPH_MAIN.Api.Controllers
         public async Task<IActionResult> Post([FromBody] ViewsDto ViewsDto)
         {
             if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var view = _mapper.Map<Views>(ViewsDto);
+            var view = _mapper.Map<View>(ViewsDto);
             await _viewService.InsertView(view);
             ViewsDto = _mapper.Map<ViewsDto>(view);
             var response = new ApiResponse<ViewsDto>(ViewsDto);
@@ -117,8 +117,8 @@ namespace QPH_MAIN.Api.Controllers
             string userId = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
             int userIds = int.Parse(userId);
             await _viewService.DeleteHierarchyByUserId(userIds);
-            await _userCardPermissionService.DeletePermissionByUserId(userIds);
-            await _userCardGrantedService.DeleteUserCardGrantedByUserId(userIds);
+            //await _userCardPermissionService.DeletePermissionByUserId(userIds);
+            //await _userCardGrantedService.DeleteUserCardGrantedByUserId(userIds);
             foreach (var tree in hierarchyNewBuild.Root)
             {
                 var _tree = _mapper.Map<Tree>(tree);
@@ -135,7 +135,7 @@ namespace QPH_MAIN.Api.Controllers
         public async Task<IActionResult> Put([FromBody] ViewsDto ViewsDto)
         {
             if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var view = _mapper.Map<Views>(ViewsDto);
+            var view = _mapper.Map<View>(ViewsDto);
             view.Id = ViewsDto.Id;//id;
             var result = await _viewService.UpdateView(view);
             var response = new ApiResponse<bool>(result);
@@ -151,8 +151,9 @@ namespace QPH_MAIN.Api.Controllers
         public async Task<IActionResult> ObtainTree()
         {
             if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            string userId = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
-            return Ok(await _treeService.GetHierarchyTreeByUserId(int.Parse(userId)));
+            string userName = User.Claims.FirstOrDefault(c => c.Type == "Username").Value;
+
+            return Ok(await _treeService.GetHierarchyTreeByUserId(userName, "Administration", "Dummy"));
         }
 
         /// <summary>

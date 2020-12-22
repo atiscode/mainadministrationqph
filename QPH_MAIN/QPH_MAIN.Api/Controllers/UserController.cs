@@ -110,7 +110,7 @@ namespace QPH_MAIN.Api.Controllers
                 var token = GenerateToken(validation.Item2);
                 return Ok(new { token });
             }
-            return NotFound(new { message = "Usuario o Contraseña incorrecta." });
+            return NotFound(new { error = "Usuario o Contraseña incorrecta." });
         }
 
         /// <summary>
@@ -209,6 +209,9 @@ namespace QPH_MAIN.Api.Controllers
             {
                 new Claim(ClaimTypes.Name, user.nickname),
                 new Claim("User", user.email),
+                new Claim("Username", user.nickname),
+                new Claim("FirstName", user.firstName),
+                new Claim("LastName", user.lastName),
                 new Claim("Id", user.Id.ToString()),
             };
             var payload = new JwtPayload

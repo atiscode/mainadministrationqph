@@ -88,7 +88,7 @@ namespace QPH_MAIN.Api.Controllers
         public async Task<IActionResult> Post([FromBody] RolesDto roleDto)
         {
             if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var role = _mapper.Map<Roles>(roleDto);
+            var role = _mapper.Map<Role>(roleDto);
             await _roleService.InsertRole(role);
             roleDto = _mapper.Map<RolesDto>(role);
             var response = new ApiResponse<RolesDto>(roleDto);
@@ -103,7 +103,7 @@ namespace QPH_MAIN.Api.Controllers
         public async Task<IActionResult> Put([FromBody] RolesDto roleDto)
         {
             if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var role = _mapper.Map<Roles>(roleDto);
+            var role = _mapper.Map<Role>(roleDto);
             role.Id = roleDto.Id;//id;
             var result = await _roleService.UpdateRole(role);
             var response = new ApiResponse<bool>(result);

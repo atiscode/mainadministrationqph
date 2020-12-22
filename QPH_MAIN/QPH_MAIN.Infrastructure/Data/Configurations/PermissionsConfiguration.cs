@@ -4,11 +4,11 @@ using QPH_MAIN.Core.Entities;
 
 namespace QPH_MAIN.Infrastructure.Data.Configurations
 {
-    public class PermissionsConfiguration : IEntityTypeConfiguration<Permissions>
+    public class PermissionsConfiguration : IEntityTypeConfiguration<Permission>
     {
-        public void Configure(EntityTypeBuilder<Permissions> builder)
+        public void Configure(EntityTypeBuilder<Permission> builder)
         {
-            builder.ToTable("Permissions");
+            builder.ToTable("Permission");
 
             builder.HasKey(e => e.Id);
 

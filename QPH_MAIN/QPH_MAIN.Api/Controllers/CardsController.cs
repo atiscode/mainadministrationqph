@@ -43,25 +43,26 @@ namespace QPH_MAIN.Api.Controllers
         [HttpPost("RetrieveCards")]
         public IActionResult GetCards([FromBody] CardsQueryFilter filters)
         {
-            var cards = _cardsService.GetCards(filters);
-            var citiesDto = _mapper.Map<IEnumerable<CardsDto>>(cards);
-            var metadata = new Metadata
-            {
-                TotalCount = cards.TotalCount,
-                PageSize = cards.PageSize,
-                CurrentPage = cards.CurrentPage,
-                TotalPages = cards.TotalPages,
-                HasNextPage = cards.HasNextPage,
-                HasPreviousPage = cards.HasPreviousPage,
-                NextPageUrl = _uriService.GetPostPaginationUri(filters, Url.RouteUrl(nameof(GetCards))).ToString(),
-                PreviousPageUrl = _uriService.GetPostPaginationUri(filters, Url.RouteUrl(nameof(GetCards))).ToString()
-            };
-            var response = new ApiResponse<IEnumerable<CardsDto>>(citiesDto)
-            {
-                Meta = metadata
-            };
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
-            return Ok(response);
+            //var cards = _cardsService.GetCards(filters);
+            //var citiesDto = _mapper.Map<IEnumerable<CardsDto>>(cards);
+            //var metadata = new Metadata
+            //{
+            //    TotalCount = cards.TotalCount,
+            //    PageSize = cards.PageSize,
+            //    CurrentPage = cards.CurrentPage,
+            //    TotalPages = cards.TotalPages,
+            //    HasNextPage = cards.HasNextPage,
+            //    HasPreviousPage = cards.HasPreviousPage,
+            //    NextPageUrl = _uriService.GetPostPaginationUri(filters, Url.RouteUrl(nameof(GetCards))).ToString(),
+            //    PreviousPageUrl = _uriService.GetPostPaginationUri(filters, Url.RouteUrl(nameof(GetCards))).ToString()
+            //};
+            //var response = new ApiResponse<IEnumerable<CardsDto>>(citiesDto)
+            //{
+            //    Meta = metadata
+            //};
+            //Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            //return Ok(response);
+            return Ok();
         }
 
         /// <summary>
@@ -71,11 +72,12 @@ namespace QPH_MAIN.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCard(int id)
         {
-            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var card = await _cardsService.GetCard(id);
-            var cardDto = _mapper.Map<CardsDto>(card);
-            var response = new ApiResponse<CardsDto>(cardDto);
-            return Ok(response);
+            //if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            //var card = await _cardsService.GetCard(id);
+            //var cardDto = _mapper.Map<CardsDto>(card);
+            //var response = new ApiResponse<CardsDto>(cardDto);
+            //return Ok(response);
+            return Ok();
         }
 
         /// <summary>
@@ -85,12 +87,13 @@ namespace QPH_MAIN.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CardsDto cardDto)
         {
-            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var card = _mapper.Map<Cards>(cardDto);
-            await _cardsService.InsertCard(card);
-            cardDto = _mapper.Map<CardsDto>(card);
-            var response = new ApiResponse<CardsDto>(cardDto);
-            return Ok(response);
+            //if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            //var card = _mapper.Map<Cards>(cardDto);
+            //await _cardsService.InsertCard(card);
+            //cardDto = _mapper.Map<CardsDto>(card);
+            //var response = new ApiResponse<CardsDto>(cardDto);
+            //return Ok(response);
+            return Ok();
         }
 
         /// <summary>
@@ -100,12 +103,13 @@ namespace QPH_MAIN.Api.Controllers
         [HttpPut]
         public async Task<IActionResult> Put(int id, CardsDto cardDto)
         {
-            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var card = _mapper.Map<Cards>(cardDto);
-            card.Id = id;
-            var result = await _cardsService.UpdateCard(card);
-            var response = new ApiResponse<bool>(result);
-            return Ok(response);
+            //if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            //var card = _mapper.Map<Cards>(cardDto);
+            //card.Id = id;
+            //var result = await _cardsService.UpdateCard(card);
+            //var response = new ApiResponse<bool>(result);
+            //return Ok(response);
+            return Ok();
         }
 
         /// <summary>
@@ -115,10 +119,10 @@ namespace QPH_MAIN.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
-            var result = await _cardsService.DeleteCard(id);
-            var response = new ApiResponse<bool>(result);
-            return Ok(response);
+            //if (!User.Identity.IsAuthenticated) throw new AuthenticationException();
+            //var result = await _cardsService.DeleteCard(id);
+            //var response = new ApiResponse<bool>(result);
+            return Ok();
         }
     }
 }

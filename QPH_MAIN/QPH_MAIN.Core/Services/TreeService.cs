@@ -15,9 +15,9 @@ namespace QPH_MAIN.Core.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Tree> GetHierarchyTreeByUserId(int userId)
+        public async Task<Tree> GetHierarchyTreeByUserId(string userName, string aplication, string enterprise)
         {
-            var tree = await _unitOfWork.TreeRepository.GetTreeByUserId(userId);
+            var tree = await _unitOfWork.TreeRepository.GetTreeByUserId(userName, aplication, enterprise);
             return tree;
         }
     }

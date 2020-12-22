@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 
 namespace QPH_MAIN.Core.Interfaces
 {
-    public interface IPermissionsRepository : IRepository<Permissions>
+    public interface IPermissionsRepository : IRepository<Permission>
     {
-        IQueryable<Permissions> GetAllPermissions();
+        IQueryable<Permission> GetAllPermissions();
     }
 }

@@ -23,37 +23,39 @@ namespace QPH_MAIN.Core.Services
             _paginationOptions = options.Value;
         }
 
-        public async Task<Roles> GetRole(int id) => await _unitOfWork.RolesRepository.GetById(id);
+        public async Task<Role> GetRole(int id) => await _unitOfWork.RolesRepository.GetById(id);
 
-        public async Task<Roles> GetRoleByName(string name) => await _unitOfWork.RolesRepository.GetByName(name);
+        public async Task<Role> GetRoleByName(string name) => await _unitOfWork.RolesRepository.GetByName(name);
 
-        //public PagedList<Roles> GetRoles(RolesQueryFilter filters)
-        //{
-        //    filters.PageNumber = filters.PageNumber == 0 ? _paginationOptions.DefaultPageNumber : filters.PageNumber;
-        //    filters.PageSize = filters.PageSize == 0 ? _paginationOptions.DefaultPageSize : filters.PageSize;
-        //    var roles = _unitOfWork.RolesRepository.GetAll();
-        //    if (filters.filter != null)
-        //    {
-        //        roles = roles.Where(x => x.rolename.ToLower().Contains(filters.filter.ToLower()));
-        //    }
-        //    if (filters.rolename != null)
-        //    {
-        //        roles = roles.Where(x => x.rolename == filters.rolename);
-        //    }
-        //    if (filters.orderedBy != null && filters.orderedBy.Count() > 0)
-        //    {
-        //        foreach (var sortM in filters.orderedBy)
-        //        {
-        //            roles = roles.OrderBy(sortM.PairAsSqlExpression);
-        //        }
-        //    }
-        //    var pagedPosts = PagedList<Roles>.Create(roles, filters.PageNumber, filters.PageSize);
-        //    return pagedPosts;
-        //}
-
-        public PagedList<Roles> GetRoles(SieveModel sieveModel)
+        public PagedList<Role> GetRoles(RolesQueryFilter filters)
         {
-            var usersFilter = _unitOfWork.RolesRepository.GetAllRoles();
+            filters.PageNumber = filters.PageNumber == 0 ? _paginationOptions.DefaultPageNumber : filters.PageNumber;
+            filters.PageSize = filters.PageSize == 0 ? _paginationOptions.DefaultPageSize : filters.PageSize;
+            var roles = _unitOfWork.RolesRepository.GetAllWithReferences();
+            if (filters.filter != null)
+            {
+                roles = roles.Where(x => x.rolename.ToLower().Contains(filters.filter.ToLower()));
+            }
+            if (filters.rolename != null)
+            {
+                roles = roles.Where(x => x.rolename == filters.rolename);
+            }
+            if (filters.orderedBy != null && filters.orderedBy.Count() > 0)
+            {
+                foreach (var sortM in filters.orderedBy)
+                {
+                    roles = roles.OrderBy(sortM.PairAsSqlExpression);
+                }
+            }
+            var pagedPosts = PagedList<Role>.Create(roles, filters.PageNumber, filters.PageSize);
+            return pagedPosts;
+        }
+
+        public PagedList<Role> GetRoles(SieveModel sieveModel)
+        {
+            var usersFilter = _unitOfWork.RolesRepository.GetAll();
+
+            //todo consider
             var page = sieveModel?.Page ?? 1;
             var pageSize = sieveModel?.PageSize ?? 10;
 
@@ -62,17 +64,17 @@ namespace QPH_MAIN.Core.Services
                 // apply pagination in a later step
                 usersFilter = SieveProcessor.Apply(sieveModel, usersFilter, applyPagination: false);
             }
-            var pagedPosts = PagedList<Roles>.CreateFromQuerable(usersFilter, page, pageSize);
+            var pagedPosts = PagedList<Role>.CreateFromQuerable(usersFilter, page, pageSize);
             return pagedPosts;
         }
 
-        public async Task InsertRole(Roles role)
+        public async Task InsertRole(Role role)
         {
             await _unitOfWork.RolesRepository.Add(role);
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<bool> UpdateRole(Roles role)
+        public async Task<bool> UpdateRole(Role role)
         {
             var existingRole = await _unitOfWork.RolesRepository.GetById(role.Id);
             existingRole.rolename = role.rolename;

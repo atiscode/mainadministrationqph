@@ -7,11 +7,11 @@ namespace QPH_MAIN.Core.Entities
     {
         public Enterprise()
         {
-            users = new HashSet<User>();
-            enterpriseCatalog = new HashSet<EnterpriseHierarchyCatalog>();
+            userApplicationRoles = new HashSet<UserApplicationRole>();
         }
 
         public int id_city { get; set; }
+        public int parent { get; set; }
         public string commercial_name { get; set; }
         public string name_application { get; set; }
         public string telephone { get; set; }
@@ -24,7 +24,6 @@ namespace QPH_MAIN.Core.Entities
         public DateTime created_at { get; set; }
         public bool status { get; set; }
         public virtual City city { get; set; }
-        public virtual ICollection<User> users { get; set; }
-        public virtual ICollection<EnterpriseHierarchyCatalog> enterpriseCatalog { get; set; }
+        public virtual ICollection<UserApplicationRole> userApplicationRoles { get; set; }
     }
 }

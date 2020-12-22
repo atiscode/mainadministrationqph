@@ -1,31 +1,27 @@
 ﻿using Microsoft.Extensions.Options;
-using OrderByExtensions;
 using QPH_MAIN.Core.CustomEntities;
 using QPH_MAIN.Core.Entities;
-using QPH_MAIN.Core.Exceptions;
 using QPH_MAIN.Core.Interfaces;
-using QPH_MAIN.Core.QueryFilters;
 using Sieve.Models;
 using Sieve.Services;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace QPH_MAIN.Core.Services
 {
-    public class PermissionsService : IPermissionsService
+    public class PermissionService : IPermissionService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly PaginationOptions _paginationOptions;
         public ISieveProcessor SieveProcessor { get; set; }
-        public PermissionsService(IUnitOfWork unitOfWork, IOptions<PaginationOptions> options)
+        public PermissionService(IUnitOfWork unitOfWork, IOptions<PaginationOptions> options)
         {
             _unitOfWork = unitOfWork;
             _paginationOptions = options.Value;
         }
 
-        public async Task<Permissions> GetPermission(int id) => await _unitOfWork.PermissionsRepository.GetById(id);
+        public async Task<Permission> GetPermission(int id) => await _unitOfWork.PermissionsRepository.GetById(id);
 
-        public PagedList<Permissions> GetPermissions(SieveModel sieveModel)
+        public PagedList<Permission> GetPermissions(SieveModel sieveModel)
         {
             var entityFilter = _unitOfWork.PermissionsRepository.GetAllPermissions();
             var page = sieveModel?.Page ?? 1;
@@ -36,17 +32,17 @@ namespace QPH_MAIN.Core.Services
                 // apply pagination in a later step
                 entityFilter = SieveProcessor.Apply(sieveModel, entityFilter, applyPagination: false);
             }
-            var pagedPosts = PagedList<Permissions>.CreateFromQuerable(entityFilter, page, pageSize);
+            var pagedPosts = PagedList<Permission>.CreateFromQuerable(entityFilter, page, pageSize);
             return pagedPosts;
         }
 
-        public async Task InsertPermission(Permissions permissions)
+        public async Task InsertPermission(Permission permissions)
         {
             await _unitOfWork.PermissionsRepository.Add(permissions);
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<bool> UpdatePermission(Permissions permissions)
+        public async Task<bool> UpdatePermission(Permission permissions)
         {
             var existingPermission = await _unitOfWork.PermissionsRepository.GetById(permissions.Id);
             existingPermission.permission = permissions.permission;

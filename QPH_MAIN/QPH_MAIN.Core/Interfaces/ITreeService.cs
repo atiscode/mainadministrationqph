@@ -5,6 +5,6 @@ namespace QPH_MAIN.Core.Interfaces
 {
     public interface ITreeService
     {
-        Task<Tree> GetHierarchyTreeByUserId(int userId);
+        Task<Tree> GetHierarchyTreeByUserId(string userName, string aplication, string enterprise);
     }
 }
